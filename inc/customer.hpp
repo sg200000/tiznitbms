@@ -15,8 +15,7 @@ private:
 public:
     Customer(sqlite3* db, std::string userName);
     bool signIn();
-    long viewBalance();
-    long transferMoney(long amount);
-    long submitCash(long amount);
+    double viewBalance();
+    bool submitCash(double amount);
     long withdrawCash(long amount);
 };

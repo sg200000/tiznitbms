@@ -24,6 +24,7 @@ int main(){
   }
 
   std::cout << "balance : " << customer.viewBalance() << std::endl;
+  customer.submitCash(1000);
 
   sqlite3_close(db);
   return 0;

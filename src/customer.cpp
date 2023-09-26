@@ -34,22 +34,23 @@ bool Customer::signIn(){
     return onlineState;
 }
 
-long Customer::viewBalance(){
+double Customer::viewBalance(){
     sqlite3_stmt *stmt;
-    int balance;
-    if (!onlineState){
+    double balance;
+    if (!this->onlineState){
         std::cerr << "you are not signed in" << std::endl;
         return -1;
     }
     if (!this->accountId){
         std::cerr << "you don't have associated account" << std::endl;
+        return -1;
     }
 
     std::string sql = "SELECT balance from accounts WHERE id="+std::to_string(this->accountId);
     int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
     if (rc != SQLITE_OK){
         std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
-        return false;
+        return -1;
     }
 
     while ((rc = sqlite3_step(stmt)) == SQLITE_ROW){
@@ -60,4 +61,29 @@ long Customer::viewBalance(){
     }
     sqlite3_finalize(stmt);
     return balance;
+}
+
+bool Customer::submitCash(double amount){
+    if (!this->onlineState){
+        std::cerr << "you are not signed in" << std::endl;
+        return false;
+    }
+    if (!this->accountId){
+        std::cerr << "you don't have associated account" << std::endl;
+        return false;
+    }
+    sqlite3_stmt *stmt;
+    std::string sql = "UPDATE accounts SET balance=balance+"+std::to_string(amount)+" WHERE id="+std::to_string(this->accountId);
+    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
+    if (rc != SQLITE_OK){
+        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
+        return false;
+    }
+
+    if ((rc = sqlite3_step(stmt)) != SQLITE_DONE){
+        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
+        return false;
+    }
+    sqlite3_finalize(stmt);
+    return true;
 }
