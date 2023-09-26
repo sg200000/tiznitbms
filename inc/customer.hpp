@@ -17,5 +17,5 @@ public:
     bool signIn();
     double viewBalance();
     bool submitCash(double amount);
-    long withdrawCash(long amount);
+    bool withdrawCash(double amount);
 };
