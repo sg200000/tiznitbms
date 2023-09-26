@@ -1,5 +1,28 @@
 #include <iostream>
+#include <sqlite3.h>
+#include "inc/customer.hpp"
 
 int main(){
-    return 0;
+  sqlite3 *db;
+  int rc;
+
+  rc = sqlite3_open("../bank.db", &db);
+
+  if (rc) {
+    std::cerr << sqlite3_errmsg(db);
+    return 1;
+  } 
+
+  Customer customer(db, "saidg");
+  bool signedIn = customer.signIn();
+
+  if (signedIn){
+    std::cout << "signIn success" << std::endl;
+  }
+  else {
+    std::cout << "signIn failed" << std::endl;
+  }
+
+  sqlite3_close(db);
+  return 0;
 }
