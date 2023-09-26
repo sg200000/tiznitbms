@@ -23,6 +23,8 @@ int main(){
     std::cout << "signIn failed" << std::endl;
   }
 
+  std::cout << "balance : " << customer.viewBalance() << std::endl;
+
   sqlite3_close(db);
   return 0;
 }
