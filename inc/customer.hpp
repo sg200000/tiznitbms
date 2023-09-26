@@ -11,10 +11,9 @@ private:
     int id, accountId;
     sqlite3* db;
     bool onlineState = false;
-    char *zErrMsg = 0;
 public:
     Customer(sqlite3* db, std::string userName);
-    bool signIn();
+    bool signIn(std::string password);
     double viewBalance();
     bool submitCash(double amount);
     bool withdrawCash(double amount);

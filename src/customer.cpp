@@ -7,11 +7,9 @@ Customer::Customer(sqlite3* db, std::string userName){
     this->db = db;
 }
 
-bool Customer::signIn(){
+bool Customer::signIn(std::string password){
     sqlite3_stmt* stmt;
-    std::string password;
     std::string sql;
-    std::cin >> password;
     int rc;
 
     sql = "SELECT id,accountId FROM customers WHERE userName='"+this->userName+"' AND password='"+password+"'";

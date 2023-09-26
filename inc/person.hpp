@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 
+#ifndef PERSON_H
+#define PERSON_H
 class Person {
 private:
     std::string firstName, lastName;
@@ -19,3 +21,5 @@ public:
     virtual void setPhone(std::string phone);
     virtual void setEmail(std::string email);
 };
+
+#endif
