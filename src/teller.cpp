@@ -135,7 +135,25 @@ bool Teller::deleteCustomer(std::string userName){
     int rc;
     char *errmsg;
 
+    int accountId = std::stoi(this->getCustomerInformation(userName)["accountId"]);
+
     sql = "DELETE FROM customers WHERE userName='"+userName+"'";
+    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
+    
+    if (rc != SQLITE_OK){
+        std::cout << "error : " << sqlite3_errmsg(this->db) << std::endl;
+        return false;
+    }
+
+    sql = "DELETE FROM customers WHERE userName='"+userName+"'";
+    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
+    
+    if (rc != SQLITE_OK){
+        std::cout << "error : " << sqlite3_errmsg(this->db) << std::endl;
+        return false;
+    }
+
+    sql = "DELETE FROM accounts WHERE id='"+std::to_string(accountId)+"'";
     rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
     
     if (rc != SQLITE_OK){

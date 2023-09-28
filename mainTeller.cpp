@@ -35,7 +35,7 @@ int mainTeller(){
 
   //teller.updateCustomerInformation("saidg", "email","said.guouihaj@gmail.com");
 
-  teller.deleteCustomer("saidg");
+  teller.deleteCustomer("alig");
   sqlite3_close(db);
   return 0;
 }
