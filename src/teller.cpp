@@ -129,3 +129,18 @@ bool Teller::updateCustomerInformation(std::string userName, std::string key, st
     }
     return true;
 }
+
+bool Teller::deleteCustomer(std::string userName){
+    std::string sql;
+    int rc;
+    char *errmsg;
+
+    sql = "DELETE FROM customers WHERE userName='"+userName+"'";
+    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
+    
+    if (rc != SQLITE_OK){
+        std::cout << "error : " << sqlite3_errmsg(this->db) << std::endl;
+        return false;
+    }
+    return true;
+}

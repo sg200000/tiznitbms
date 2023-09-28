@@ -14,5 +14,5 @@ public:
     bool registerNewCustomer(Person customer, std::string userName, std::string password, int accountId);
     std::unordered_map<std::string,std::string> getCustomerInformation(std::string userName);
     bool updateCustomerInformation(std::string userName, std::string key, std::string value);
-
+    bool deleteCustomer(std::string userName);
 };

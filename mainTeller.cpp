@@ -33,7 +33,9 @@ int mainTeller(){
     std::cout << p.first << " : " << p.second << std::endl;
   }
 
-  teller.updateCustomerInformation("saidg", "email","said.guouihaj@gmail.com");
+  //teller.updateCustomerInformation("saidg", "email","said.guouihaj@gmail.com");
+
+  teller.deleteCustomer("saidg");
   sqlite3_close(db);
   return 0;
 }
