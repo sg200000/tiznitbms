@@ -2,33 +2,19 @@
 #include <sqlite3.h>
 #include "inc/customer.hpp"
 
+int mainCustomer(void);
+int mainTeller(void);
+
 int main(){
-  sqlite3 *db;
-  int rc;
-
-  rc = sqlite3_open("../bank.db", &db);
-
-  if (rc) {
-    std::cerr << sqlite3_errmsg(db);
-    return 1;
-  } 
-
-  Customer customer(db, "saidg");
-  bool signedIn = customer.signIn();
-
-  if (signedIn){
-    std::cout << "signIn success" << std::endl;
+  int mode;
+  std::cout << "Hello this is the bank management system please choose the mode :" << std::endl;
+  std::cout << "\t1 -> customer mode\n\t2 -> teller mode" << std::endl;
+  std::cin >> mode;
+  switch (mode){
+    case 1:
+      mainCustomer();
+    case 2:
+      mainTeller();
   }
-  else {
-    std::cout << "signIn failed" << std::endl;
-  }
-
-  std::cout << "initial balance : " << customer.viewBalance() << std::endl;
-  customer.submitCash(1000);
-  std::cout << "balance after submit : " << customer.viewBalance() << std::endl;
-  customer.withdrawCash(500);
-  std::cout << "balance after withdraw : " << customer.viewBalance() << std::endl;
-
-  sqlite3_close(db);
   return 0;
 }
