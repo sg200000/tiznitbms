@@ -1,5 +1,7 @@
 #include <iostream>
+#include <string>
 #include <sqlite3.h>
+#include <unordered_map>
 #include "inc/teller.hpp"
 
 int mainTeller(){
@@ -22,10 +24,16 @@ int mainTeller(){
   else {
     std::cout << "signIn failed" << std::endl;
   }
-  Person p("Ali", "Guouihaj","aliguouihaj@gmail.com", "0754565755");
+ // Person p("Ali", "Guouihaj","aliguouihaj@gmail.com", "0754565755");
 
-  teller.registerNewCustomer(p, "alig", "ali123", 500);
-  
+  //teller.registerNewCustomer(p, "alig", "ali123", 500);
+
+  std::unordered_map<std::string,std::string> customerInfo = teller.getCustomerInformation("saidg");
+  for (std::pair<std::string,std::string> p : customerInfo){
+    std::cout << p.first << " : " << p.second << std::endl;
+  }
+
+  teller.updateCustomerInformation("saidg", "email","said.guouihaj@gmail.com");
   sqlite3_close(db);
   return 0;
 }
