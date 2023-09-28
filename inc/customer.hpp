@@ -17,4 +17,11 @@ public:
     double viewBalance();
     bool submitCash(double amount);
     bool withdrawCash(double amount);
+    void setUserName(std::string userName){
+        this->userName = userName;
+    }
+    std::string getUserName(){
+        return this->userName;
+    }
+
 };

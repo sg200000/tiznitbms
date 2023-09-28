@@ -13,8 +13,10 @@ int main(){
   switch (mode){
     case 1:
       mainCustomer();
+      break;
     case 2:
       mainTeller();
+      break;
   }
   return 0;
 }
