@@ -1,9 +1,9 @@
 #include <iostream>
+#include <utility>
 #include <sqlite3.h>
+#include "main.hpp"
 #include "inc/customer.hpp"
 
-int mainCustomer(void);
-int mainTeller(void);
 
 int main(){
   int mode;
@@ -13,8 +13,19 @@ int main(){
   switch (mode){
     case 1:
       mainCustomer();
+      break;
     case 2:
       mainTeller();
+      break;
   }
   return 0;
+}
+
+std::pair<std::string,std::string> loginInterface(){
+  std::string userName, password;
+  std::cout << "User name : ";
+  std::cin >> userName;
+  std::cout << "password : ";
+  std::cin >> password;
+  return std::make_pair(userName, password);
 }

@@ -15,4 +15,10 @@ public:
     std::unordered_map<std::string,std::string> getCustomerInformation(std::string userName);
     bool updateCustomerInformation(std::string userName, std::string key, std::string value);
     bool deleteCustomer(std::string userName);
+    void setUserName(std::string userName){
+        this->userName = userName;
+    }
+    std::string getUserName(){
+        return this->userName;
+    }
 };
