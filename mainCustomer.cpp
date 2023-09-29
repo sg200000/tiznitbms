@@ -1,15 +1,7 @@
 #include <iostream>
 #include <sqlite3.h>
 #include "inc/customer.hpp"
-
-std::pair<std::string,std::string> loginInterface(){
-  std::string userName, password;
-  std::cout << "User name : ";
-  std::cin >> userName;
-  std::cout << "password : ";
-  std::cin >> password;
-  return std::make_pair(userName, password);
-}
+#include "main.hpp"
 
 void viewBalanceInterface(double balance, std::string currency){
   std::cout << "Balance : " << balance << currency << std::endl; 
