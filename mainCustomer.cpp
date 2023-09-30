@@ -26,17 +26,10 @@ void withdrawCashInterface(Customer& customer, std::string currency){
 }
 
 int mainCustomer(){
-  sqlite3 *db;
-  int rc;
   bool signedIn;
-  rc = sqlite3_open("../bank.db", &db);
-
-  if (rc) {
-    std::cerr << sqlite3_errmsg(db);
-    return 1;
-  }
+  
   std::pair<std::string,std::string> creds;
-  Customer customer(db, creds.first);
+  Customer customer("../bank.db", creds.first);
   do {
     creds = loginInterface();
     customer.setUserName(creds.first);
@@ -65,6 +58,5 @@ int mainCustomer(){
   }
   while (mode != 0);
 
-  sqlite3_close(db);
   return 0;
 }

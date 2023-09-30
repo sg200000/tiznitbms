@@ -2,11 +2,18 @@
 #include <cassert>
 #include <unordered_map>
 
-Customer::Customer(sqlite3* db, std::string userName){
+Customer::Customer(std::string dbPath, std::string userName){
+    int rc = sqlite3_open(dbPath.c_str(), &(this->db));
+    if (rc) {
+        std::cerr << sqlite3_errmsg(this->db);
+        return;
+    }
     this->userName = userName;
-    this->db = db;
 }
 
+Customer::~Customer(){
+    sqlite3_close(this->db);
+}
 bool Customer::signIn(std::string password){
     sqlite3_stmt* stmt;
     std::string sql;

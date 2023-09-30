@@ -9,7 +9,8 @@ private:
     sqlite3* db;
     bool onlineState = false;
 public:
-    Teller(sqlite3* db, std::string userName);
+    Teller(std::string dbPath, std::string userName);
+    ~Teller();
     bool signIn(std::string password);
     bool registerNewCustomer(Person customer, std::string userName, std::string password, int accountId);
     std::unordered_map<std::string,std::string> getCustomerInformation(std::string userName);

@@ -12,7 +12,8 @@ private:
     sqlite3* db;
     bool onlineState = false;
 public:
-    Customer(sqlite3* db, std::string userName);
+    Customer(std::string dbPath, std::string userName);
+    ~Customer();
     bool signIn(std::string password);
     double viewBalance();
     bool submitCash(double amount);

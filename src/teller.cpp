@@ -3,9 +3,17 @@
 #include <format>
 #include <sstream>
 
-Teller::Teller(sqlite3* db, std::string userName){
+Teller::Teller(std::string dbPath, std::string userName){
+    int rc = sqlite3_open(dbPath.c_str(), &(this->db));
+    if (rc) {
+        std::cerr << sqlite3_errmsg(this->db);
+        return;
+    }
     this->userName = userName;
-    this->db = db;
+}
+
+Teller::~Teller(){
+    sqlite3_close(this->db);
 }
 
 bool Teller::signIn(std::string password){
