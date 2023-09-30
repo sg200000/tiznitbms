@@ -42,26 +42,19 @@ bool Teller::signIn(std::string password){
 
 bool Teller::registerNewCustomer(Person customer, std::string userName, std::string password, int accountId){
     /* Create an account in accounts (initialized balance = 0) */
-    sqlite3_stmt* stmt;
     std::string sql;
     int rc;
-    std::cout << "creating account" << std::endl;
+
     sql = std::format("INSERT INTO accounts (id,balance,min)\
             VALUES ('{}',0.0,0.0);",accountId);
-    rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
+    char* errmsg;
+    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
     if (rc != SQLITE_OK){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
+        std::cerr << "error : " << sqlite3_errmsg(this->db) << std::endl;
         return false;
     }
-
-    while ((rc = sqlite3_step(stmt)) != SQLITE_DONE){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
-    sqlite3_finalize(stmt);
     
     /* Add a customer and associate created account */
-    std::cout << "creating customer account" << std::endl;
     sql = std::format("INSERT INTO customers (firstName,lastName,email,phone,accountId,userName,password)\
         VALUES ('{}','{}','{}','{}','{}','{}','{}');",customer.getFirstName(),
                                         customer.getLastName(),
@@ -71,17 +64,12 @@ bool Teller::registerNewCustomer(Person customer, std::string userName, std::str
                                         userName,
                                         password);
 
-    rc = sqlite3_prepare_v2(this->db, sql.c_str(), -1, &stmt, NULL);
+    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
     if (rc != SQLITE_OK){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
+        std::cerr << "error : " << sqlite3_errmsg(this->db) << std::endl;
         return false;
     }
 
-    while ((rc = sqlite3_step(stmt)) != SQLITE_DONE){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
-    sqlite3_finalize(stmt);
     return true;
 }
 
@@ -153,14 +141,6 @@ bool Teller::deleteCustomer(std::string userName){
         return false;
     }
 
-    sql = "DELETE FROM customers WHERE userName='"+userName+"'";
-    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
-    
-    if (rc != SQLITE_OK){
-        std::cout << "error : " << sqlite3_errmsg(this->db) << std::endl;
-        return false;
-    }
-
     sql = "DELETE FROM accounts WHERE id='"+std::to_string(accountId)+"'";
     rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
     
@@ -168,5 +148,6 @@ bool Teller::deleteCustomer(std::string userName){
         std::cout << "error : " << sqlite3_errmsg(this->db) << std::endl;
         return false;
     }
+
     return true;
 }

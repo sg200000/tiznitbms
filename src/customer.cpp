@@ -77,19 +77,15 @@ bool Customer::submitCash(double amount){
         std::cerr << "you don't have associated account" << std::endl;
         return false;
     }
-    sqlite3_stmt *stmt;
+    
     std::string sql = "UPDATE accounts SET balance=balance+"+std::to_string(amount)+" WHERE id="+std::to_string(this->accountId);
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
+    char* errmsg;
+    int rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
     if (rc != SQLITE_OK){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
+        std::cerr << "error : " << sqlite3_errmsg(this->db) << std::endl;
         return false;
     }
 
-    if ((rc = sqlite3_step(stmt)) != SQLITE_DONE){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
-    sqlite3_finalize(stmt);
     return true;
 }
 
@@ -102,18 +98,13 @@ bool Customer::withdrawCash(double amount){
         std::cerr << "you don't have associated account" << std::endl;
         return false;
     }
-    sqlite3_stmt *stmt;
     std::string sql = "UPDATE accounts SET balance=balance-"+std::to_string(amount)+" WHERE id="+std::to_string(this->accountId);
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
+    char* errmsg;
+    int rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
     if (rc != SQLITE_OK){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
+        std::cerr << "error : " << sqlite3_errmsg(this->db) << std::endl;
         return false;
     }
 
-    if ((rc = sqlite3_step(stmt)) != SQLITE_DONE){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
-    sqlite3_finalize(stmt);
     return true; 
 }
