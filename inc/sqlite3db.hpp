@@ -2,6 +2,7 @@
 #include <string>
 #include <sstream>
 #include <utility>
+#include <vector>
 #include <unordered_map>
 #include <sqlite3.h>
 #include "db.hpp"
@@ -11,11 +12,13 @@ private:
     sqlite3* db;
 public:
     Sqlite3DB(std::string dbPath);
-    /*bool requestData();*/
+    bool requestData(std::string tableName, std::vector<std::string> columns, std::string key, std::string value, 
+                     std::vector<std::vector<std::string>>& outData);
     bool insertData(std::string tableName, std::unordered_map<std::string,std::string> data);
     bool updateData(std::string tableName, std::string key, std::string value, 
                     std::string condKey, std::string condValue);
     bool deleteData(std::string tableName, std::string key, std::string value);
+    static int callback(void* outDataPtr, int count, char** inData, char** columns);
     ~Sqlite3DB();
 };
 
@@ -63,14 +66,6 @@ bool Sqlite3DB::insertData(std::string tableName, std::unordered_map<std::string
     std::stringstream sqlBuilder;
     std::string sql;
     char* errmsg;
-    /*std::string sql = std::format("INSERT INTO customers (firstName,lastName,email,phone,accountId,userName,password)\
-        VALUES ('{}','{}','{}','{}','{}','{}','{}');",customer.getFirstName(),
-                                        customer.getLastName(),
-                                        customer.getEmail(),
-                                        customer.getPhone(),
-                                        accountId,
-                                        userName,
-                                        password);*/
 
     sqlBuilder << "INSERT INTO "+tableName+" (";
     for (auto iter = data.begin(); iter != data.end();){
@@ -95,4 +90,40 @@ bool Sqlite3DB::insertData(std::string tableName, std::unordered_map<std::string
         return false;
     }
     return true;
+}
+
+bool Sqlite3DB::requestData(std::string tableName, std::vector<std::string> columns, std::string key, std::string value, std::vector<std::vector<std::string>>& outData){
+    std::string sql;
+    std::stringstream sqlBuilder;
+    int rc;
+    char* errmsg;
+    sqlBuilder << "SELECT ";
+    for (auto iter = columns.begin(); iter != columns.end();){
+        sqlBuilder << *iter;
+        if (++iter != columns.end()){
+            sqlBuilder << ",";
+        }
+    }
+    sqlBuilder << " FROM " << tableName << " WHERE " << key << "='" << value << "'";
+    sql = sqlBuilder.str();
+    
+    rc = sqlite3_exec(this->db, sql.c_str(), &(Sqlite3DB::callback), &outData, &errmsg);
+    
+    if (rc != SQLITE_OK){
+        std::cout << "error : " << sqlite3_errmsg(this->db) << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+int Sqlite3DB::callback(void* outDataPtr, int count, char** inData, char** columns){
+    std::vector<std::vector<std::string>>* tempOutDataPtr = static_cast<std::vector<std::vector<std::string>>*>(outDataPtr);
+
+    std::vector<std::string> row;
+    for (int i=0;i<count;i++){
+        row.push_back(inData[i]);
+    }
+    tempOutDataPtr->push_back(row);
+    return 0;
 }
