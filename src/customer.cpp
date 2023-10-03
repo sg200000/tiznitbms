@@ -8,8 +8,6 @@ bool Customer::signIn(std::string password){
     this->onlineState = this->db.requestData("customers",{"id","accountId"}, 
                                             {{"userName",this->userName},{"password",password}}, &outData);
 
-    std::cout << outData.size() << std::endl;
-
     if (!this->onlineState){
         return false;
     }
@@ -38,9 +36,7 @@ double Customer::viewBalance(){
         std::cerr << "Cannot get account balance" << std::endl;
         return -1;
     }
-    double balance = stod(outData[0][0]);
-
-    return balance;
+    return stod(outData[0][0]);
 }
 
 bool Customer::submitCash(double amount){
@@ -53,9 +49,7 @@ bool Customer::submitCash(double amount){
         return false;
     }
 
-    bool rc = this->db.updateData("accounts", "balance", "balance+"+std::to_string(amount), "id", std::to_string(this->accountId));
-
-    return rc;
+    return this->db.updateData("accounts", "balance", "balance+"+std::to_string(amount), "id", std::to_string(this->accountId));
 }
 
 bool Customer::withdrawCash(double amount){
@@ -68,7 +62,5 @@ bool Customer::withdrawCash(double amount){
         return false;
     }
 
-    bool rc = this->db.updateData("accounts", "balance", "balance-"+std::to_string(amount), "id", std::to_string(this->accountId));
-
-    return rc; 
+    return this->db.updateData("accounts", "balance", "balance-"+std::to_string(amount), "id", std::to_string(this->accountId)); 
 }

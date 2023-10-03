@@ -2,10 +2,10 @@
 
 #include <string>
 
-class DBManager
+class DBManager_base
 {
 public:
-    DBManager(){};
+    DBManager_base(){};
     virtual bool requestData(std::string tableName, std::vector<std::string> columns, std::unordered_map<std::string, std::string> conditions, 
                              std::vector<std::vector<std::string>>* outData) = 0;
     virtual bool insertData(std::string tableName, std::unordered_map<std::string,std::string> data) = 0;

@@ -17,7 +17,6 @@ bool Teller::signIn(std::string password){
 
 bool Teller::registerNewCustomer(Person customer, std::string userName, std::string password, int accountId){
     /* Create an account in accounts (initialized balance = 0) */
-    
     bool rc = this->db.insertData("accounts", {
         {"id",std::to_string(accountId)},
         {"balance","0.0"},
