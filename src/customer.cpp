@@ -2,39 +2,24 @@
 #include <cassert>
 #include <unordered_map>
 
-Customer::Customer(sqlite3* db, std::string userName){
-    this->userName = userName;
-    this->db = db;
-}
-
 bool Customer::signIn(std::string password){
-    sqlite3_stmt* stmt;
-    std::string sql;
-    int rc;
+    std::vector<std::vector<std::string>> outData;
 
-    sql = "SELECT id,accountId FROM customers WHERE userName='"+this->userName+"' AND password='"+password+"'";
-    rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
-    if (rc != SQLITE_OK){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
+    this->onlineState = this->db.requestData("customers",{"id","accountId"}, 
+                                            {{"userName",this->userName},{"password",password}}, &outData);
+
+    if (!this->onlineState){
         return false;
     }
 
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW){
-        this->id = sqlite3_column_int(stmt, 0);
-        this->accountId = sqlite3_column_int(stmt, 1);
-        this->onlineState = true;
-    }
-    if (rc != SQLITE_DONE){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
-    }
-    sqlite3_finalize(stmt);
+    this->id = stoi(outData[0][0]);
+    this->accountId = stoi(outData[0][1]);
 
-    return onlineState;
+    return true;
 }
 
 double Customer::viewBalance(){
-    sqlite3_stmt *stmt;
-    double balance;
+    bool rc;
     if (!this->onlineState){
         std::cerr << "you are not signed in" << std::endl;
         return -1;
@@ -43,22 +28,15 @@ double Customer::viewBalance(){
         std::cerr << "you don't have associated account" << std::endl;
         return -1;
     }
+    std::vector<std::vector<std::string>> outData;
 
-    std::string sql = "SELECT balance from accounts WHERE id="+std::to_string(this->accountId);
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
-    if (rc != SQLITE_OK){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
+    rc = this->db.requestData("accounts", {"balance"}, {{"id", std::to_string(this->accountId)}}, &outData);
+
+    if (!rc){
+        std::cerr << "Cannot get account balance" << std::endl;
         return -1;
     }
-
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW){
-        balance = sqlite3_column_int(stmt, 0);
-    }
-    if (rc != SQLITE_DONE){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
-    }
-    sqlite3_finalize(stmt);
-    return balance;
+    return stod(outData[0][0]);
 }
 
 bool Customer::submitCash(double amount){
@@ -70,20 +48,8 @@ bool Customer::submitCash(double amount){
         std::cerr << "you don't have associated account" << std::endl;
         return false;
     }
-    sqlite3_stmt *stmt;
-    std::string sql = "UPDATE accounts SET balance=balance+"+std::to_string(amount)+" WHERE id="+std::to_string(this->accountId);
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
-    if (rc != SQLITE_OK){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
 
-    if ((rc = sqlite3_step(stmt)) != SQLITE_DONE){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
-    sqlite3_finalize(stmt);
-    return true;
+    return this->db.updateData("accounts", "balance", "balance+"+std::to_string(amount), "id", std::to_string(this->accountId));
 }
 
 bool Customer::withdrawCash(double amount){
@@ -95,18 +61,6 @@ bool Customer::withdrawCash(double amount){
         std::cerr << "you don't have associated account" << std::endl;
         return false;
     }
-    sqlite3_stmt *stmt;
-    std::string sql = "UPDATE accounts SET balance=balance-"+std::to_string(amount)+" WHERE id="+std::to_string(this->accountId);
-    int rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
-    if (rc != SQLITE_OK){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
 
-    if ((rc = sqlite3_step(stmt)) != SQLITE_DONE){
-        std::cerr << "error : " << sqlite3_errmsg(db) << std::endl;
-        return false;
-    }
-    sqlite3_finalize(stmt);
-    return true; 
+    return this->db.updateData("accounts", "balance", "balance-"+std::to_string(amount), "id", std::to_string(this->accountId)); 
 }

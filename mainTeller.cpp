@@ -68,19 +68,10 @@ void deleteCustomerInterface(Teller& teller){
 }
 
 int mainTeller(){
-  sqlite3 *db;
-  int rc;
   bool signedIn;
 
-  rc = sqlite3_open("../bank.db", &db);
-
-  if (rc) {
-    std::cerr << sqlite3_errmsg(db);
-    return 1;
-  }
-
   std::pair<std::string,std::string> creds;
-  Teller teller(db, creds.first);
+  Teller teller("../bank.db", creds.first);
   do {
     creds = loginInterface();
     teller.setUserName(creds.first);
@@ -113,6 +104,5 @@ int mainTeller(){
   }
   while (mode != 0);
   
-  sqlite3_close(db);
   return 0;
 }

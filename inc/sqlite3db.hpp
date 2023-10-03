@@ -1,0 +1,27 @@
+#pragma once
+
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <utility>
+#include <vector>
+#include <unordered_map>
+#include <sqlite3.h>
+#include "db.hpp"
+
+class Sqlite3DB : public DBManager_base {
+private:
+    sqlite3* db;
+public:
+    Sqlite3DB(){}
+    Sqlite3DB(std::string dbPath);
+    bool requestData(std::string tableName, std::vector<std::string> columns, std::unordered_map<std::string, std::string> conditions, 
+                     std::vector<std::vector<std::string>>* outData);
+    bool insertData(std::string tableName, std::unordered_map<std::string,std::string> data);
+    bool updateData(std::string tableName, std::string key, std::string value, 
+                    std::string condKey, std::string condValue);
+    bool deleteData(std::string tableName, std::string key, std::string value);
+    static int callback(void* outDataPtr, int count, char** inData, char** columns);
+    ~Sqlite3DB();
+};
+
