@@ -13,7 +13,7 @@ TEST_CASE("Test URID")
     CHECK(updated == true);
 
     std::unordered_map<std::string,std::string> data = {
-        {"id", "34506500"},
+        {"id", "3455606500"},
         {"balance", "0"},
         {"min", "0"}
     };
@@ -22,7 +22,7 @@ TEST_CASE("Test URID")
 
     std::vector<std::vector<std::string>> outData;
     std::vector<std::string> columns = {"id"};
-    bool requested = db.requestData("accounts", columns, "balance", "0.0", outData);
+    bool requested = db.requestData("accounts", columns, {{"balance", "0.0"}, {"min", "0.0"}}, outData);
     CHECK(requested);
     for (auto row : outData){
         for (auto val : row){

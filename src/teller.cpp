@@ -1,72 +1,46 @@
 #include "../inc/teller.hpp"
-#include <sqlite3.h>
-#include <format>
-#include <sstream>
-
-Teller::Teller(std::string dbPath, std::string userName){
-    int rc = sqlite3_open(dbPath.c_str(), &(this->db));
-    if (rc) {
-        std::cerr << sqlite3_errmsg(this->db);
-        return;
-    }
-    this->userName = userName;
-}
-
-Teller::~Teller(){
-    sqlite3_close(this->db);
-}
 
 bool Teller::signIn(std::string password){
-    sqlite3_stmt* stmt;
-    std::string sql;
-    int rc;
+    std::vector<std::vector<std::string>> outData;
 
-    sql = "SELECT id FROM tellers WHERE userName='"+this->userName+"' AND password='"+password+"'";
-    rc = sqlite3_prepare_v2(db, sql.c_str(), -1, &stmt, NULL);
-    if (rc != SQLITE_OK){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
+    this->onlineState = this->db.requestData("tellers",{"id"}, 
+                                            {{"userName",this->userName},{"password",password}}, &outData);
+
+    if (!this->onlineState){
         return false;
     }
 
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW){
-        this->id = sqlite3_column_int(stmt, 0);
-        this->onlineState = true;
-    }
-    if (rc != SQLITE_DONE){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
-    }
-    sqlite3_finalize(stmt);
+    this->id = stoi(outData[0][0]);
 
-    return onlineState;
+    return true;
 }
 
 bool Teller::registerNewCustomer(Person customer, std::string userName, std::string password, int accountId){
     /* Create an account in accounts (initialized balance = 0) */
-    std::string sql;
-    int rc;
-
-    sql = std::format("INSERT INTO accounts (id,balance,min)\
-            VALUES ('{}',0.0,0.0);",accountId);
-    char* errmsg;
-    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
-    if (rc != SQLITE_OK){
-        std::cerr << "error : " << sqlite3_errmsg(this->db) << std::endl;
+    
+    bool rc = this->db.insertData("accounts", {
+        {"id",std::to_string(accountId)},
+        {"balance","0.0"},
+        {"min","0.0"}
+    });
+    if (!rc){
+        std::cerr << "Cannot create account" << std::endl;
         return false;
     }
-    
-    /* Add a customer and associate created account */
-    sql = std::format("INSERT INTO customers (firstName,lastName,email,phone,accountId,userName,password)\
-        VALUES ('{}','{}','{}','{}','{}','{}','{}');",customer.getFirstName(),
-                                        customer.getLastName(),
-                                        customer.getEmail(),
-                                        customer.getPhone(),
-                                        accountId,
-                                        userName,
-                                        password);
 
-    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
-    if (rc != SQLITE_OK){
-        std::cerr << "error : " << sqlite3_errmsg(this->db) << std::endl;
+    /* Add a customer and associate created account */
+    rc = this->db.insertData("customers",{
+        {"firstName", customer.getFirstName()},
+        {"lastName", customer.getLastName()},
+        {"email", customer.getEmail()},
+        {"phone", customer.getPhone()},
+        {"accountId", std::to_string(accountId)},
+        {"userName",userName},
+        {"password",password}
+    });
+
+    if (!rc){
+        std::cerr << "Cannot add customer" << std::endl;
         return false;
     }
 
@@ -75,77 +49,42 @@ bool Teller::registerNewCustomer(Person customer, std::string userName, std::str
 
 std::unordered_map<std::string,std::string> Teller::getCustomerInformation(std::string userName){
     std::unordered_map<std::string,std::string> customerInfo;
-    sqlite3_stmt* stmt;
-    std::string sql;
-    int rc;
-
-    sql = "SELECT * FROM customers WHERE userName='"+userName+"';";
-    rc = sqlite3_prepare_v2(this->db, sql.c_str(),-1, &stmt, NULL);
-    if (rc != SQLITE_OK){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
+    std::vector<std::vector<std::string>> outData;
+    std::vector<std::string> columns = {"id","firstName","lastName","email","phone","accountId","userName"};
+    bool rc = this->db.requestData("customers", columns, {{"userName",userName}}, &outData);
+    if (!rc){
         return customerInfo;
     }
-
-    int num_columns = sqlite3_column_count(stmt);
-    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW){
-        std::string column;
-        std::string data;
-        for (int i=0;i<num_columns;i++){
-            column = sqlite3_column_name(stmt, i);
-            if (column == "password"){
-                continue;
-            }
-            if (column == "id" || column == "accountId"){
-                data = std::to_string(sqlite3_column_int(stmt, i));
-            }
-            else {
-                data = reinterpret_cast<const char*>(sqlite3_column_text(stmt, i));
-            }
-            customerInfo.insert(std::make_pair(column, data));
-        }
+    for (int i=0;i<columns.size();i++){
+        customerInfo.insert(std::make_pair(columns[i], outData[0][i]));
     }
-    if (rc != SQLITE_DONE){
-        std::cout << "error : " << sqlite3_errmsg(db) << std::endl;
-    }
-    sqlite3_finalize(stmt);
     return customerInfo;
 }
 
 bool Teller::updateCustomerInformation(std::string userName, std::string key, std::string value){
-    std::string sql;
-    int rc;
-    char *errmsg;
+    bool rc = this->db.updateData("customers", key, value, "userName", userName);
 
-    sql = "UPDATE customers SET "+key+"='"+value+"' WHERE userName='"+userName+"'";
-    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
-    
-    if (rc != SQLITE_OK){
-        std::cout << "error : " << sqlite3_errmsg(this->db) << std::endl;
+    if (!rc){
+        std::cerr << "couldn't update " << key << " with " << value << std::endl;
         return false;
     }
     return true;
 }
 
 bool Teller::deleteCustomer(std::string userName){
-    std::string sql;
-    int rc;
-    char *errmsg;
-
     int accountId = std::stoi(this->getCustomerInformation(userName)["accountId"]);
-
-    sql = "DELETE FROM customers WHERE userName='"+userName+"'";
-    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
     
-    if (rc != SQLITE_OK){
-        std::cout << "error : " << sqlite3_errmsg(this->db) << std::endl;
+    bool rc = this->db.deleteData("customers","userName", userName);
+    
+    if (!rc){
+        std::cerr << "Couldn't delete the customer " << userName << std::endl;
         return false;
     }
 
-    sql = "DELETE FROM accounts WHERE id='"+std::to_string(accountId)+"'";
-    rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
+    rc = this->db.deleteData("accounts","id", std::to_string(accountId));
     
-    if (rc != SQLITE_OK){
-        std::cout << "error : " << sqlite3_errmsg(this->db) << std::endl;
+    if (!rc){
+        std::cout << "Couldn' delete account number " << accountId << std::endl;
         return false;
     }
 

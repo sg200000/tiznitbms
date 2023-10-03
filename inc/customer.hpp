@@ -2,18 +2,18 @@
 #include <string>
 #include <unordered_map>
 #include <cassert>
-#include <sqlite3.h>
 #include "person.hpp"
+#include "sqlite3db.hpp"
 
 class Customer : public Person {
 private:
     std::string userName;
     int id, accountId;
-    sqlite3* db;
+    Sqlite3DB db;
     bool onlineState = false;
 public:
-    Customer(std::string dbPath, std::string userName);
-    ~Customer();
+    Customer(std::string dbPath, std::string userName) : db(dbPath),userName(userName) {};
+    ~Customer(){};
     bool signIn(std::string password);
     double viewBalance();
     bool submitCash(double amount);
