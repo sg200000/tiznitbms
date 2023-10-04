@@ -1,6 +1,14 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
+
+enum class sqlType {
+    TEXT,
+    REAL,
+    INT,
+    UNKNOWN
+};
 
 class DBManager_base
 {
@@ -13,4 +21,7 @@ public:
                            std::unordered_map<std::string,std::string> condition) = 0;
     virtual bool deleteData(std::string tableName, std::unordered_map<std::string,std::string> conditions) = 0;
     virtual ~DBManager_base() {}
+
+protected:
+    virtual std::unordered_map<std::string,sqlType> requestTableHeader(std::string tableName) = 0;
 };

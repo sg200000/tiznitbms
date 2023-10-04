@@ -9,13 +9,6 @@
 #include <sqlite3.h>
 #include "db.hpp"
 
-enum class sqlType {
-    TEXT,
-    REAL,
-    INT,
-    UNKNOWN
-};
-
 class Sqlite3DB : public DBManager_base {
 private:
     sqlite3* db;
