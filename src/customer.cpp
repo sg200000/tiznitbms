@@ -49,7 +49,12 @@ bool Customer::submitCash(double amount){
         return false;
     }
 
-    return this->db.updateData("accounts", "balance", "balance+"+std::to_string(amount), "id", std::to_string(this->accountId));
+    return this->db.updateData("accounts",{
+        {"balance","balance+"+std::to_string(amount)}
+    }, 
+    {
+        {"id",std::to_string(this->accountId)}
+    });
 }
 
 bool Customer::withdrawCash(double amount){
@@ -62,5 +67,10 @@ bool Customer::withdrawCash(double amount){
         return false;
     }
 
-    return this->db.updateData("accounts", "balance", "balance-"+std::to_string(amount), "id", std::to_string(this->accountId)); 
+    return this->db.updateData("accounts", {
+        {"balance","balance-"+std::to_string(amount)}
+    }, 
+    {
+        {"id",std::to_string(this->accountId)}
+    }); 
 }

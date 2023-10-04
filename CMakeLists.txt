@@ -14,7 +14,8 @@ add_executable(main
     src/person.cpp 
     src/customer.cpp 
     src/teller.cpp
-    src/sqlite3db.cpp)
+    src/sqlite3db.cpp
+    src/utils.cpp)
 
 target_include_directories(main PUBLIC inc C:/sqlite3)
 target_link_libraries(main PRIVATE sqlite3)

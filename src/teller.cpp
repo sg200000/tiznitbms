@@ -61,7 +61,7 @@ std::unordered_map<std::string,std::string> Teller::getCustomerInformation(std::
 }
 
 bool Teller::updateCustomerInformation(std::string userName, std::string key, std::string value){
-    bool rc = this->db.updateData("customers", key, value, "userName", userName);
+    bool rc = this->db.updateData("customers", {{key, value}}, {{"userName", userName}});
 
     if (!rc){
         std::cerr << "couldn't update " << key << " with " << value << std::endl;
