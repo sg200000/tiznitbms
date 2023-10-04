@@ -1,4 +1,5 @@
 #include "../inc/sqlite3db.hpp"
+#include "../inc/utils.hpp"
 #include <cassert>
 
 
@@ -15,11 +16,12 @@ Sqlite3DB::~Sqlite3DB()
     sqlite3_close(this->db);
 }
 
-bool Sqlite3DB::deleteData(std::string tableName, std::string key, std::string value){
+bool Sqlite3DB::deleteData(std::string tableName, std::unordered_map<std::string,std::string> conditions){
     std::string sql;
     int rc;
     char* errmsg;
-    sql = "DELETE FROM "+tableName+" WHERE "+key+"='"+value+"'";
+    std::unordered_map<std::string, sqlType> tableHeader = requestTableHeader(tableName);
+    sql = "DELETE FROM "+tableName+" WHERE "+prepareAndSerialize(conditions,tableHeader," AND ");
     rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
     
     if (rc != SQLITE_OK){
@@ -29,10 +31,18 @@ bool Sqlite3DB::deleteData(std::string tableName, std::string key, std::string v
     return true;
 }
 
-bool Sqlite3DB::updateData(std::string tableName, std::string key, std::string value,
-                            std::string condKey, std::string condValue){
+bool Sqlite3DB::updateData(std::string tableName,
+                           std::unordered_map<std::string,std::string> updates,
+                           std::unordered_map<std::string,std::string> conditions){
+    std::unordered_map<std::string, sqlType> tableHeader = requestTableHeader(tableName);
     char* errmsg;
-    std::string sql = "UPDATE "+tableName+" SET "+key+"="+value+" WHERE "+condKey+"="+condValue+"";
+    std::stringstream sqlBuilder;
+    sqlBuilder << "UPDATE " << tableName;
+    sqlBuilder << " SET " << prepareAndSerialize(updates,tableHeader);
+    sqlBuilder << " WHERE " << prepareAndSerialize(conditions, tableHeader);
+
+    std::string sql = sqlBuilder.str();
+
     int rc = sqlite3_exec(this->db, sql.c_str(), nullptr, nullptr, &errmsg);
     
     if (rc != SQLITE_OK){
@@ -47,7 +57,7 @@ bool Sqlite3DB::insertData(std::string tableName, std::unordered_map<std::string
     std::string sql;
     char* errmsg;
 
-    sqlBuilder << "INSERT INTO "+tableName+" (";
+    sqlBuilder << "INSERT INTO " << tableName << " (";
     for (auto iter = data.begin(); iter != data.end();){
         sqlBuilder << iter->first;
         if (++iter != data.end()){
@@ -77,20 +87,11 @@ bool Sqlite3DB::requestData(std::string tableName, std::vector<std::string> colu
     std::stringstream sqlBuilder;
     int rc;
     char* errmsg;
-    sqlBuilder << "SELECT ";
-    for (auto iter = columns.begin(); iter != columns.end();){
-        sqlBuilder << *iter;
-        if (++iter != columns.end()){
-            sqlBuilder << ",";
-        }
-    }
-    sqlBuilder << " FROM " << tableName << " WHERE ";
-    for (auto iter = conditions.begin(); iter != conditions.end();){
-        sqlBuilder << iter->first << "='" << iter->second << "'";
-        if (++iter != conditions.end()){
-            sqlBuilder << " AND ";
-        }
-    }
+    std::unordered_map<std::string, sqlType> tableHeader = requestTableHeader(tableName);
+    sqlBuilder << "SELECT " << utils::serialize(columns);
+    sqlBuilder << " FROM " << tableName;
+    sqlBuilder << " WHERE " << prepareAndSerialize(conditions,tableHeader," AND ");
+    
     sql = sqlBuilder.str();
     
     rc = sqlite3_exec(this->db, sql.c_str(), &(Sqlite3DB::callback), outData, &errmsg);
@@ -115,4 +116,48 @@ int Sqlite3DB::callback(void* outDataPtr, int count, char** inData, char** colum
     }
     tempOutDataPtr->push_back(row);
     return 0;
+}
+
+std::unordered_map<std::string,sqlType> Sqlite3DB::requestTableHeader(std::string tableName){
+    char * errmsg;
+    std::unordered_map<std::string,sqlType> tableHeader;
+
+    // request to get table information
+    std::string sql = "SELECT name,type FROM pragma_table_info('"+tableName+"')";
+    std::vector<std::vector<std::string>> tableInfo;
+
+    int rc = sqlite3_exec(this->db, sql.c_str(), &(Sqlite3DB::callback), &tableInfo, &errmsg);
+    
+    if (rc != SQLITE_OK){
+        std::cout << "error " << rc << " : " << sqlite3_errmsg(this->db) << std::endl;
+        return tableHeader;
+    }
+
+    // add table column data to the map
+    for (auto column : tableInfo){
+        assert(column.size() == 2);
+        if (column[1] == "TEXT"){
+            tableHeader.insert(std::make_pair(column[0],sqlType::TEXT));
+        }
+        else if (column[1] == "REAL"){
+            tableHeader.insert(std::make_pair(column[0],sqlType::REAL));
+        } 
+        else if (column[1] == "INT"){
+            tableHeader.insert(std::make_pair(column[0],sqlType::INT));
+        }
+        else {
+            tableHeader.insert(std::make_pair(column[0],sqlType::UNKNOWN));
+        }
+    }
+    return tableHeader;
+}
+
+std::string Sqlite3DB::prepareAndSerialize(std::unordered_map<std::string,std::string>& sqlData, std::unordered_map<std::string,sqlType> sqlTable, std::string sep){
+    for (auto sqlRow : sqlData){
+        if (sqlTable[sqlRow.first] == sqlType::TEXT){
+            sqlData[sqlRow.first] = "'"+sqlData[sqlRow.first]+"'";
+        }
+    }
+    std::string serialized = utils::serialize(sqlData, sep);
+    return serialized;
 }

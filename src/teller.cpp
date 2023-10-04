@@ -61,7 +61,7 @@ std::unordered_map<std::string,std::string> Teller::getCustomerInformation(std::
 }
 
 bool Teller::updateCustomerInformation(std::string userName, std::string key, std::string value){
-    bool rc = this->db.updateData("customers", key, value, "userName", userName);
+    bool rc = this->db.updateData("customers", {{key, value}}, {{"userName", userName}});
 
     if (!rc){
         std::cerr << "couldn't update " << key << " with " << value << std::endl;
@@ -73,14 +73,14 @@ bool Teller::updateCustomerInformation(std::string userName, std::string key, st
 bool Teller::deleteCustomer(std::string userName){
     int accountId = std::stoi(this->getCustomerInformation(userName)["accountId"]);
     
-    bool rc = this->db.deleteData("customers","userName", userName);
+    bool rc = this->db.deleteData("customers",{{"userName", userName}});
     
     if (!rc){
         std::cerr << "Couldn't delete the customer " << userName << std::endl;
         return false;
     }
 
-    rc = this->db.deleteData("accounts","id", std::to_string(accountId));
+    rc = this->db.deleteData("accounts",{{"id", std::to_string(accountId)}});
     
     if (!rc){
         std::cout << "Couldn' delete account number " << accountId << std::endl;
