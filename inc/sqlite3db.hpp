@@ -28,12 +28,12 @@ public:
     bool updateData(std::string tableName,
                     std::unordered_map<std::string,std::string> updates,
                     std::unordered_map<std::string,std::string> conditions);
-    bool deleteData(std::string tableName, std::string key, std::string value);
+    bool deleteData(std::string tableName, std::unordered_map<std::string,std::string> conditions);
     static int callback(void* outDataPtr, int count, char** inData, char** columns);
     ~Sqlite3DB();
 
 protected:
-    std::unordered_map<std::string,sqlType> resquestTableHeader(std::string tableName);
+    std::unordered_map<std::string,sqlType> requestTableHeader(std::string tableName);
     std::string prepareAndSerialize(std::unordered_map<std::string,std::string>& sqlData, std::unordered_map<std::string,sqlType> sqlTable, std::string sep = ",");
 };
 

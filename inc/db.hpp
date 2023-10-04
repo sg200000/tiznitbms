@@ -11,6 +11,6 @@ public:
     virtual bool updateData(std::string tableName,
                            std::unordered_map<std::string,std::string> updates,
                            std::unordered_map<std::string,std::string> condition) = 0;
-    virtual bool deleteData(std::string tableName, std::string key, std::string value) = 0;
+    virtual bool deleteData(std::string tableName, std::unordered_map<std::string,std::string> conditions) = 0;
     virtual ~DBManager_base() {}
 };
