@@ -5,7 +5,8 @@
 
 class Teller : public Person {
 private:
-    std::string userName, id;
+    std::string userName;
+    int id;
     Sqlite3DB db;
     bool onlineState = false;
 public:
