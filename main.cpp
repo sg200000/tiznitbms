@@ -3,8 +3,8 @@
 #include <memory>
 #include <sqlite3.h>
 #include "inc/interface/userInterface.hpp"
-#include "inc/interface/customerInterface.hpp"
-#include "inc/interface/tellerInterface.hpp"
+#include "inc/interface/customerCLI.hpp"
+#include "inc/interface/tellerCLI.hpp"
 
 int main(){
   std::unique_ptr<UserInterface> interface;
@@ -14,10 +14,10 @@ int main(){
   std::cin >> mode;
   switch (mode){
     case 1:
-      interface = std::unique_ptr<UserInterface>(new customerInterface());
+      interface = std::unique_ptr<UserInterface>(new customerCLI());
       break;
     case 2:
-      interface = std::unique_ptr<UserInterface>(new tellerInterface());
+      interface = std::unique_ptr<UserInterface>(new tellerCLI());
       break;
   }
   return 0;
