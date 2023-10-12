@@ -10,7 +10,7 @@ private:
     Sqlite3DB db;
     bool onlineState = false;
 public:
-    Teller(std::string dbPath, std::string userName): db(dbPath), userName(userName) {}
+    Teller(std::string dbPath): db(dbPath) {}
     ~Teller() {}
     bool signIn(std::string password);
     bool registerNewCustomer(Person customer, std::string userName, std::string password, int accountId);
@@ -22,5 +22,11 @@ public:
     }
     std::string getUserName(){
         return this->userName;
+    }
+    void setOnlineState(bool onlineState){
+        this->onlineState = onlineState;
+    }
+    bool getOnlineState(){
+        return this->onlineState;
     }
 };

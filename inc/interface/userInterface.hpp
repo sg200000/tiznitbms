@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <vector>
 
+using data_mapper = std::unordered_map<std::string,std::string>;
+
 class UserInterface {
 public:
     std::unordered_map<std::string,std::string> readUserInput(std::vector<std::string> toRead) {

@@ -10,7 +10,8 @@ add_executable(main
     main.cpp 
     
     src/person.cpp 
-    src/customer.cpp 
+    src/customer.cpp
+    src/teller.cpp
     src/sqlite3db.cpp
     src/utils.cpp)
 

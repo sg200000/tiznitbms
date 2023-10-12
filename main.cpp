@@ -4,6 +4,7 @@
 #include <sqlite3.h>
 #include "inc/interface/userInterface.hpp"
 #include "inc/interface/customerInterface.hpp"
+#include "inc/interface/tellerInterface.hpp"
 
 int main(){
   std::unique_ptr<UserInterface> interface;
@@ -16,6 +17,7 @@ int main(){
       interface = std::unique_ptr<UserInterface>(new customerInterface());
       break;
     case 2:
+      interface = std::unique_ptr<UserInterface>(new tellerInterface());
       break;
   }
   return 0;
