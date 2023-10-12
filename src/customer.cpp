@@ -2,20 +2,18 @@
 #include <cassert>
 #include <unordered_map>
 
-bool Customer::signIn(std::string password){
+void Customer::signIn(std::string password){
     std::vector<std::vector<std::string>> outData;
 
     this->onlineState = this->db.requestData("customers",{"id","accountId"}, 
                                             {{"userName",this->userName},{"password",password}}, &outData);
 
     if (!this->onlineState){
-        return false;
+        return;
     }
 
     this->id = stoi(outData[0][0]);
     this->accountId = stoi(outData[0][1]);
-
-    return true;
 }
 
 double Customer::viewBalance(){

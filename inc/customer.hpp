@@ -12,9 +12,10 @@ private:
     Sqlite3DB db;
     bool onlineState = false;
 public:
-    Customer(std::string dbPath, std::string userName) : db(dbPath),userName(userName) {};
+    Customer() {}
+    Customer(std::string dbPath) : db(dbPath) {};
     ~Customer(){};
-    bool signIn(std::string password);
+    void signIn(std::string password);
     double viewBalance();
     bool submitCash(double amount);
     bool withdrawCash(double amount);
@@ -23,6 +24,12 @@ public:
     }
     std::string getUserName(){
         return this->userName;
+    }
+    void setOnlineState(bool onlineState){
+        this->onlineState = onlineState;
+    }
+    bool getOnlineState(){
+        return this->onlineState;
     }
 
 };

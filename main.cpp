@@ -1,31 +1,22 @@
 #include <iostream>
 #include <utility>
+#include <memory>
 #include <sqlite3.h>
-#include "main.hpp"
-#include "inc/customer.hpp"
-
+#include "inc/interface/userInterface.hpp"
+#include "inc/interface/customerInterface.hpp"
 
 int main(){
+  std::unique_ptr<UserInterface> interface;
   int mode;
   std::cout << "Hello this is the bank management system please choose the mode :" << std::endl;
   std::cout << "\t1 -> customer mode\n\t2 -> teller mode" << std::endl;
   std::cin >> mode;
   switch (mode){
     case 1:
-      mainCustomer();
+      interface = std::unique_ptr<UserInterface>(new customerInterface());
       break;
     case 2:
-      mainTeller();
       break;
   }
   return 0;
-}
-
-std::pair<std::string,std::string> loginInterface(){
-  std::string userName, password;
-  std::cout << "User name : ";
-  std::cin >> userName;
-  std::cout << "password : ";
-  std::cin >> password;
-  return std::make_pair(userName, password);
 }

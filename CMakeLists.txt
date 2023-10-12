@@ -8,14 +8,11 @@ add_library(sqlite3 C:/sqlite3/sqlite3.c)
 
 add_executable(main 
     main.cpp 
-    mainCustomer.cpp 
-    mainTeller.cpp 
     
     src/person.cpp 
     src/customer.cpp 
-    src/teller.cpp
     src/sqlite3db.cpp
     src/utils.cpp)
 
-target_include_directories(main PUBLIC inc C:/sqlite3)
+target_include_directories(main PUBLIC inc C:/sqlite3 inc/interface)
 target_link_libraries(main PRIVATE sqlite3)
