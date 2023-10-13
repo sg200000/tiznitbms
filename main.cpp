@@ -2,9 +2,9 @@
 #include <utility>
 #include <memory>
 #include <sqlite3.h>
-#include "inc/interface/userInterface.hpp"
-#include "inc/interface/customerCLI.hpp"
-#include "inc/interface/tellerCLI.hpp"
+#include "userInterface.hpp"
+#include "customerCLI.hpp"
+#include "tellerCLI.hpp"
 
 int main(){
   std::unique_ptr<UserInterface> interface;
