@@ -1,11 +1,16 @@
+#include "../inc/sqlite3db.hpp"
 #include "../inc/customer.hpp"
 #include <cassert>
 #include <unordered_map>
 
+Customer::Customer(std::string dbPath){
+    this->db = std::unique_ptr<DBManager>(new Sqlite3DB(dbPath));
+}
+
 void Customer::signIn(std::string password){
     std::vector<std::vector<std::string>> outData;
 
-    this->onlineState = this->db.requestData("customers",{"id","accountId"}, 
+    this->onlineState = this->db->requestData("customers",{"id","accountId"}, 
                                             {{"userName",this->userName},{"password",password}}, &outData);
 
     if (!this->onlineState){
@@ -28,7 +33,7 @@ double Customer::viewBalance(){
     }
     std::vector<std::vector<std::string>> outData;
 
-    rc = this->db.requestData("accounts", {"balance"}, {{"id", std::to_string(this->accountId)}}, &outData);
+    rc = this->db->requestData("accounts", {"balance"}, {{"id", std::to_string(this->accountId)}}, &outData);
 
     if (!rc){
         std::cerr << "Cannot get account balance" << std::endl;
@@ -47,7 +52,7 @@ bool Customer::submitCash(double amount){
         return false;
     }
 
-    return this->db.updateData("accounts",{
+    return this->db->updateData("accounts",{
         {"balance","balance+"+std::to_string(amount)}
     }, 
     {
@@ -65,7 +70,7 @@ bool Customer::withdrawCash(double amount){
         return false;
     }
 
-    return this->db.updateData("accounts", {
+    return this->db->updateData("accounts", {
         {"balance","balance-"+std::to_string(amount)}
     }, 
     {

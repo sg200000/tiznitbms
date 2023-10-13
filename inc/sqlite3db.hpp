@@ -9,7 +9,7 @@
 #include <sqlite3.h>
 #include "db.hpp"
 
-class Sqlite3DB : public DBManager_base {
+class Sqlite3DB : public DBManager {
 private:
     sqlite3* db;
 public:

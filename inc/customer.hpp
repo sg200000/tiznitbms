@@ -3,19 +3,18 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <memory>
 #include <cassert>
 #include "person.hpp"
-#include "sqlite3db.hpp"
-
+#include "db.hpp"
 class Customer : public Person {
 private:
     std::string userName;
     int id, accountId;
-    Sqlite3DB db;
+    std::unique_ptr<DBManager> db;
     bool onlineState = false;
 public:
-    Customer() {}
-    Customer(std::string dbPath) : db(dbPath) {};
+    Customer(std::string dbPath);
     ~Customer(){};
     void signIn(std::string password);
     double viewBalance();

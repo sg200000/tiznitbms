@@ -10,7 +10,7 @@ enum class sqlType {
     UNKNOWN
 };
 
-class DBManager_base
+class DBManager
 {
 public:
     virtual bool requestData(std::string tableName, std::vector<std::string> columns, std::unordered_map<std::string, std::string> conditions, 
@@ -20,7 +20,7 @@ public:
                            std::unordered_map<std::string,std::string> updates,
                            std::unordered_map<std::string,std::string> condition) = 0;
     virtual bool deleteData(std::string tableName, std::unordered_map<std::string,std::string> conditions) = 0;
-    virtual ~DBManager_base() {}
+    virtual ~DBManager() {}
 
 protected:
     virtual std::unordered_map<std::string,sqlType> requestTableHeader(std::string tableName) = 0;

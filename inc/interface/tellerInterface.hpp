@@ -8,7 +8,6 @@
 
 class tellerInterface : public UserInterface {
 public:
-    virtual void loginInterface() = 0;
     virtual void registerNewCustomerInterface() = 0;
     virtual void updateCustomerInformationInterface() = 0;
     virtual void getCustomerInformationInterface() = 0;

@@ -41,7 +41,7 @@ public:
     }
 
     void loginInterface() override {
-        std::unordered_map<std::string,std::string> creds = this->readUserInput({"userName","password"});
+        data_mapper creds = this->readUserInput({"userName","password"});
         this->customer->setUserName(creds["userName"]);
         this->customer->signIn(creds["password"]);
         if (this->customer->getOnlineState()){
@@ -57,13 +57,13 @@ public:
     }
 
     void submitCashInterface(std::string currency) override {
-        std::unordered_map<std::string,std::string> cashData = this->readUserInput({"cash"});
+        data_mapper cashData = this->readUserInput({"cash"});
         this->customer->submitCash(stoi(cashData["cash"]));
         this->printToStdout("You just submitted "+cashData["cash"]+currency);
     }
 
     void withdrawCashInterface(std::string currency) override {
-        std::unordered_map<std::string,std::string> cashData = this->readUserInput({"cash"});
+        data_mapper cashData = this->readUserInput({"cash"});
         this->customer->withdrawCash(stoi(cashData["cash"]));
         this->printToStdout("You just withdrawed "+cashData["cash"]+currency);
     }

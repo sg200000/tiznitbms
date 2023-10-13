@@ -7,7 +7,6 @@
 
 class customerInterface : public UserInterface {
 public:
-    virtual void loginInterface() = 0;
     virtual void viewBalanceInterface(std::string currency) = 0;
     virtual void submitCashInterface(std::string currency) = 0;
     virtual void withdrawCashInterface(std::string currency) = 0;

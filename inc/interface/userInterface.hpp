@@ -21,5 +21,6 @@ public:
     }
     inline void printToStdout(std::string text, std::string sep = "\n") { std::cout << text << sep; }
     virtual void mainInterface() = 0;
+    virtual void loginInterface() = 0;
     ~UserInterface() {}
 };

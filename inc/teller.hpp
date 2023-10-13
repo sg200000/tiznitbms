@@ -1,16 +1,15 @@
 #include <iostream>
-#include "sqlite3db.hpp"
+#include "db.hpp"
 #include "person.hpp"
-#include "customer.hpp"
 
 class Teller : public Person {
 private:
     std::string userName;
     int id;
-    Sqlite3DB db;
+    std::unique_ptr<DBManager> db;
     bool onlineState = false;
 public:
-    Teller(std::string dbPath): db(dbPath) {}
+    Teller(std::string dbPath);
     ~Teller() {}
     bool signIn(std::string password);
     bool registerNewCustomer(Person customer, std::string userName, std::string password, int accountId);
