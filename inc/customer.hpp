@@ -1,20 +1,22 @@
+#pragma once
+
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <memory>
 #include <cassert>
 #include "person.hpp"
-#include "sqlite3db.hpp"
-
+#include "db.hpp"
 class Customer : public Person {
 private:
     std::string userName;
     int id, accountId;
-    Sqlite3DB db;
+    std::unique_ptr<DBManager> db;
     bool onlineState = false;
 public:
-    Customer(std::string dbPath, std::string userName) : db(dbPath),userName(userName) {};
+    Customer(std::string dbPath);
     ~Customer(){};
-    bool signIn(std::string password);
+    void signIn(std::string password);
     double viewBalance();
     bool submitCash(double amount);
     bool withdrawCash(double amount);
@@ -23,6 +25,12 @@ public:
     }
     std::string getUserName(){
         return this->userName;
+    }
+    void setOnlineState(bool onlineState){
+        this->onlineState = onlineState;
+    }
+    bool getOnlineState(){
+        return this->onlineState;
     }
 
 };

@@ -1,9 +1,14 @@
 #include "../inc/teller.hpp"
+#include "../inc/sqlite3db.hpp"
+
+Teller::Teller(std::string dbPath) {
+    this->db = std::unique_ptr<DBManager>(new Sqlite3DB(dbPath));
+}
 
 bool Teller::signIn(std::string password){
     std::vector<std::vector<std::string>> outData;
 
-    this->onlineState = this->db.requestData("tellers",{"id"}, 
+    this->onlineState = this->db->requestData("tellers",{"id"}, 
                                             {{"userName",this->userName},{"password",password}}, &outData);
 
     if (!this->onlineState){
@@ -17,7 +22,7 @@ bool Teller::signIn(std::string password){
 
 bool Teller::registerNewCustomer(Person customer, std::string userName, std::string password, int accountId){
     /* Create an account in accounts (initialized balance = 0) */
-    bool rc = this->db.insertData("accounts", {
+    bool rc = this->db->insertData("accounts", {
         {"id",std::to_string(accountId)},
         {"balance","0.0"},
         {"min","0.0"}
@@ -28,7 +33,7 @@ bool Teller::registerNewCustomer(Person customer, std::string userName, std::str
     }
 
     /* Add a customer and associate created account */
-    rc = this->db.insertData("customers",{
+    rc = this->db->insertData("customers",{
         {"firstName", customer.getFirstName()},
         {"lastName", customer.getLastName()},
         {"email", customer.getEmail()},
@@ -50,7 +55,7 @@ std::unordered_map<std::string,std::string> Teller::getCustomerInformation(std::
     std::unordered_map<std::string,std::string> customerInfo;
     std::vector<std::vector<std::string>> outData;
     std::vector<std::string> columns = {"id","firstName","lastName","email","phone","accountId","userName"};
-    bool rc = this->db.requestData("customers", columns, {{"userName",userName}}, &outData);
+    bool rc = this->db->requestData("customers", columns, {{"userName",userName}}, &outData);
     if (!rc){
         return customerInfo;
     }
@@ -61,7 +66,7 @@ std::unordered_map<std::string,std::string> Teller::getCustomerInformation(std::
 }
 
 bool Teller::updateCustomerInformation(std::string userName, std::string key, std::string value){
-    bool rc = this->db.updateData("customers", {{key, value}}, {{"userName", userName}});
+    bool rc = this->db->updateData("customers", {{key, value}}, {{"userName", userName}});
 
     if (!rc){
         std::cerr << "couldn't update " << key << " with " << value << std::endl;
@@ -73,14 +78,14 @@ bool Teller::updateCustomerInformation(std::string userName, std::string key, st
 bool Teller::deleteCustomer(std::string userName){
     int accountId = std::stoi(this->getCustomerInformation(userName)["accountId"]);
     
-    bool rc = this->db.deleteData("customers",{{"userName", userName}});
+    bool rc = this->db->deleteData("customers",{{"userName", userName}});
     
     if (!rc){
         std::cerr << "Couldn't delete the customer " << userName << std::endl;
         return false;
     }
 
-    rc = this->db.deleteData("accounts",{{"id", std::to_string(accountId)}});
+    rc = this->db->deleteData("accounts",{{"id", std::to_string(accountId)}});
     
     if (!rc){
         std::cout << "Couldn' delete account number " << accountId << std::endl;
