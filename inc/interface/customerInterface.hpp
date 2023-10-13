@@ -12,4 +12,6 @@ public:
     virtual void submitCashInterface(std::string currency) = 0;
     virtual void withdrawCashInterface(std::string currency) = 0;
     ~customerInterface() {}
+protected:
+    std::unique_ptr<Customer> customer;
 };

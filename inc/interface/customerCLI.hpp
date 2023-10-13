@@ -17,7 +17,7 @@ public:
         this->mainInterface();
     }
 
-    void mainInterface(){
+    void mainInterface() override {
         int mode;
         do {
             this->printToStdout("Welcome to the customer interface. Please select the operation :");
@@ -40,7 +40,7 @@ public:
         while (mode != 0);
     }
 
-    void loginInterface(){
+    void loginInterface() override {
         std::unordered_map<std::string,std::string> creds = this->readUserInput({"userName","password"});
         this->customer->setUserName(creds["userName"]);
         this->customer->signIn(creds["password"]);
@@ -52,21 +52,19 @@ public:
         }
     }
 
-    void viewBalanceInterface(std::string currency){
+    void viewBalanceInterface(std::string currency) override {
         this->printToStdout("Balance : "+std::to_string(this->customer->viewBalance())+currency);
     }
 
-    void submitCashInterface(std::string currency){
+    void submitCashInterface(std::string currency) override {
         std::unordered_map<std::string,std::string> cashData = this->readUserInput({"cash"});
         this->customer->submitCash(stoi(cashData["cash"]));
         this->printToStdout("You just submitted "+cashData["cash"]+currency);
     }
 
-    void withdrawCashInterface(std::string currency){
+    void withdrawCashInterface(std::string currency) override {
         std::unordered_map<std::string,std::string> cashData = this->readUserInput({"cash"});
         this->customer->withdrawCash(stoi(cashData["cash"]));
         this->printToStdout("You just withdrawed "+cashData["cash"]+currency);
     }
-private:
-    std::unique_ptr<Customer> customer;
 };

@@ -3,7 +3,6 @@
 #include <iostream>
 #include <memory>
 #include "tellerInterface.hpp"
-#include "teller.hpp"
 
 class tellerCLI : public tellerInterface {
 public:
@@ -17,7 +16,7 @@ public:
         this->mainInterface();
     }
 
-    void mainInterface(){
+    void mainInterface() override {
         int mode;
         do {
             this->printToStdout("Welcome to the teller interface. Please select the operation :");
@@ -44,7 +43,7 @@ public:
         while (mode != 0);
     }
 
-    void loginInterface(){
+    void loginInterface() override {
         data_mapper creds = this->readUserInput({"userName","password"});
         this->teller->setUserName(creds["userName"]);
         this->teller->signIn(creds["password"]);
@@ -56,7 +55,7 @@ public:
         }
     }
 
-    void registerNewCustomerInterface(){
+    void registerNewCustomerInterface() override {
         Person p;
         data_mapper newCustomer = this->readUserInput({
             "First name",
@@ -75,12 +74,12 @@ public:
         this->teller->registerNewCustomer(p, newCustomer["User name"], newCustomer["Password"], stoi(newCustomer["Account id"]));
     }
 
-    void updateCustomerInformationInterface(){
+    void updateCustomerInformationInterface() override {
         data_mapper updates = this->readUserInput({"userName","key","value"});
         this->teller->updateCustomerInformation(updates["userName"], updates["key"], updates["value"]);
     }
 
-    void getCustomerInformationInterface(){
+    void getCustomerInformationInterface() override {
         data_mapper customerInfo;
         data_mapper keyInfo = readUserInput({"userName"});
         customerInfo = this->teller->getCustomerInformation(keyInfo["userName"]);
@@ -89,10 +88,8 @@ public:
         }
     }
 
-    void deleteCustomerInterface(){
+    void deleteCustomerInterface() override {
         data_mapper delKey = readUserInput({"userName"});
         this->teller->deleteCustomer(delKey["userName"]);
     }
-private:
-    std::unique_ptr<Teller> teller;
 };
