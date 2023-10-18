@@ -1,4 +1,10 @@
-#include "../inc/utils.hpp"
+/*
+ * Description : Utils implementation file
+ * Copyright (C) 2023 Said Guouihaj
+ * Licence : GPLv3
+*/
+
+#include "utils.hpp"
 
 std::string utils::serialize(std::unordered_map<std::string,std::string> map, std::string sep){
     std::stringstream serialized;

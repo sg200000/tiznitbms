@@ -1,13 +1,18 @@
+/*
+ * Description : customer operations implementation
+ * Copyright (C) 2023 Said Guouihaj
+ * Licence : GPLv3
+*/
+
 #include "../inc/sqlite3db.hpp"
 #include "../inc/customer.hpp"
-#include <cassert>
 #include <unordered_map>
 
-Customer::Customer(std::string dbPath){
+Customer::Customer(const std::string& dbPath){
     this->db = std::unique_ptr<DBManager>(new Sqlite3DB(dbPath));
 }
 
-void Customer::signIn(std::string password){
+void Customer::signIn(const std::string& password){
     std::vector<std::vector<std::string>> outData;
 
     this->onlineState = this->db->requestData("customers",{"id","accountId"}, 

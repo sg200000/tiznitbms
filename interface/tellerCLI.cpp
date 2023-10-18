@@ -1,4 +1,11 @@
-#include "inc/tellerCLI.hpp"
+/*
+ * Description : Teller command-line interface implementation
+ * Copyright (C) 2023 Said Guouihaj
+ * Licence : GPLv3
+*/
+
+#include <iostream>
+#include "tellerCLI.hpp"
 
 tellerCLI::tellerCLI() {
     std::string dbPath = "C:/Users/saidg/source/tiznitbms/bank.db";
@@ -65,7 +72,7 @@ void tellerCLI::registerNewCustomerInterface(){
     p.setEmail(newCustomer["Email"]);
     p.setPhone(newCustomer["Phone"]);
     
-    this->teller->registerNewCustomer(p, newCustomer["User name"], newCustomer["Password"], stoi(newCustomer["Account id"]));
+    this->teller->registerNewCustomer(p, newCustomer["User name"],newCustomer["Password"], stoi(newCustomer["Account id"]));
 }
 
 void tellerCLI::updateCustomerInformationInterface(){

@@ -1,26 +1,35 @@
-#include "../inc/teller.hpp"
-#include "../inc/sqlite3db.hpp"
+/*
+ * Description : Teller operations implementation
+ * Copyright (C) 2023 Said Guouihaj
+ * Licence : GPLv3
+*/
 
-Teller::Teller(std::string dbPath) {
+#include "teller.hpp"
+#include "sqlite3db.hpp"
+
+Teller::Teller(const std::string& dbPath) {
     this->db = std::unique_ptr<DBManager>(new Sqlite3DB(dbPath));
 }
 
-bool Teller::signIn(std::string password){
+bool Teller::signIn(const std::string& password){
+    // Declare data vector to get userName and password from database if login valid
+    // Otherwise the outData will remain empty
     std::vector<std::vector<std::string>> outData;
-
     this->onlineState = this->db->requestData("tellers",{"id"}, 
                                             {{"userName",this->userName},{"password",password}}, &outData);
 
+    // Return false if login is not valid
     if (!this->onlineState){
         return false;
     }
 
+    // If the login is valid get the teller id
     this->id = stoi(outData[0][0]);
 
     return true;
 }
 
-bool Teller::registerNewCustomer(Person customer, std::string userName, std::string password, int accountId){
+bool Teller::registerNewCustomer(Person customer, const std::string& userName, const std::string& password, int accountId){
     /* Create an account in accounts (initialized balance = 0) */
     bool rc = this->db->insertData("accounts", {
         {"id",std::to_string(accountId)},
@@ -51,21 +60,26 @@ bool Teller::registerNewCustomer(Person customer, std::string userName, std::str
     return true;
 }
 
-std::unordered_map<std::string,std::string> Teller::getCustomerInformation(std::string userName){
-    std::unordered_map<std::string,std::string> customerInfo;
-    std::vector<std::vector<std::string>> outData;
+std::unordered_map<std::string,std::string> Teller::getCustomerInformation(const std::string& userName){
+    std::unordered_map<std::string,std::string> customerInfo; // Parsed customer information
+    std::vector<std::vector<std::string>> outData; // Raw returned data
     std::vector<std::string> columns = {"id","firstName","lastName","email","phone","accountId","userName"};
+
+    // Request data to the database
     bool rc = this->db->requestData("customers", columns, {{"userName",userName}}, &outData);
     if (!rc){
         return customerInfo;
     }
+
+    // Map data to columns
     for (int i=0;i<columns.size();i++){
         customerInfo.insert(std::make_pair(columns[i], outData[0][i]));
     }
+
     return customerInfo;
 }
 
-bool Teller::updateCustomerInformation(std::string userName, std::string key, std::string value){
+bool Teller::updateCustomerInformation(const std::string& userName, const std::string& key, const std::string& value){
     bool rc = this->db->updateData("customers", {{key, value}}, {{"userName", userName}});
 
     if (!rc){
@@ -75,7 +89,8 @@ bool Teller::updateCustomerInformation(std::string userName, std::string key, st
     return true;
 }
 
-bool Teller::deleteCustomer(std::string userName){
+bool Teller::deleteCustomer(const std::string& userName){
+    // To delete a customer the account record should be delated
     int accountId = std::stoi(this->getCustomerInformation(userName)["accountId"]);
     
     bool rc = this->db->deleteData("customers",{{"userName", userName}});
@@ -85,6 +100,7 @@ bool Teller::deleteCustomer(std::string userName){
         return false;
     }
 
+    // Then the user record
     rc = this->db->deleteData("accounts",{{"id", std::to_string(accountId)}});
     
     if (!rc){
