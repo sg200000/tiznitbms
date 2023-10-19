@@ -5,7 +5,9 @@
 */
 
 #include <iostream>
+#include <string>
 #include <memory>
+#include "utils.hpp"
 #include "userInterface.hpp"
 #include "customerCLI.hpp"
 #include "tellerCLI.hpp"
@@ -17,19 +19,23 @@ int main(){
   // The mode to use (customer or teller)
   int mode;
   std::cout << "Hello this is the bank management system please choose the mode :" << std::endl;
-
-  // Read mode as a ser input
-  std::cout << "\t1 -> customer mode\n\t2 -> teller mode" << std::endl;
-  std::cin >> mode;
-
-  // Instanciate the interface based on user input
-  switch (mode){
-    case 1:
-      interface = std::unique_ptr<UserInterface>(new customerCLI());
-      break;
-    case 2:
-      interface = std::unique_ptr<UserInterface>(new tellerCLI());
-      break;
-  }
+  // Read user input and instanciate the interface based on user input
+  do {
+    // Read mode as a user input
+    mode = utils::choicePrompt({"Customer mode", "Teller mode", "Exit"});
+    switch (mode){
+      case 1:
+        interface = std::unique_ptr<UserInterface>(new customerCLI());
+        return 0;
+      case 2:
+        interface = std::unique_ptr<UserInterface>(new tellerCLI());
+        return 0;
+      case 3:
+        std::cout << "Exiting..." << std::endl;
+        break;
+      default:
+        std::cout << "Unsupported command Please enter a supported command : " << std::endl;
+    }
+  }while(mode != 3);
   return 0;
 }

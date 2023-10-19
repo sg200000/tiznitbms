@@ -4,8 +4,8 @@
  * Licence : GPLv3
 */
 
-#include "../inc/sqlite3db.hpp"
-#include "../inc/customer.hpp"
+#include "sqlite3db.hpp"
+#include "customer.hpp"
 #include <unordered_map>
 
 Customer::Customer(const std::string& dbPath){

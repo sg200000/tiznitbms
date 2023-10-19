@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include "tellerCLI.hpp"
+#include "utils.hpp"
 
 tellerCLI::tellerCLI() {
     std::string dbPath = "C:/Users/saidg/source/tiznitbms/bank.db";
@@ -19,13 +20,10 @@ tellerCLI::tellerCLI() {
 
 void tellerCLI::mainInterface(){
     int mode;
+    this->printToStdout("Welcome to the teller interface. Please select the operation :");
     do {
-        this->printToStdout("Welcome to the teller interface. Please select the operation :");
-        this->printToStdout("\t1 -> register a new customer");
-        this->printToStdout("\t2 -> get customer information");
-        this->printToStdout("\t3 -> update a customer information");
-        this->printToStdout("\t4 -> delete a customer");
-        std::cin >> mode;
+        mode = utils::choicePrompt({"Register a new customer","Get customer information",
+                                    "Update a customer information","Delete a customer", "Exit"});
         switch(mode){
             case 1:
                 this->registerNewCustomerInterface();
@@ -39,9 +37,14 @@ void tellerCLI::mainInterface(){
             case 4:
                 this->deleteCustomerInterface();
                 break;
+            case 5:
+                std::cout << "Exiting..." << std::endl;
+                break;
+            default:
+                std::cout << "unsupported command Please enter a supported command : " << std::endl;
         }
     }
-    while (mode != 0);
+    while (mode != 5);
 }
 
 void tellerCLI::loginInterface(){

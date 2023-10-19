@@ -5,6 +5,7 @@
 */
 
 #include "customerCLI.hpp"
+#include "utils.hpp"
 
 customerCLI::customerCLI(){
     // Bank database filepath (note that this version uses sqlite3)
@@ -26,12 +27,9 @@ customerCLI::customerCLI(){
 void customerCLI::mainInterface(){
     // Print the guide and select the operation
     int mode;
+    this->printToStdout("Welcome to the customer interface. Please select the operation :");
     do {
-        this->printToStdout("Welcome to the customer interface. Please select the operation :");
-        this->printToStdout("\t1 -> view your account balance");
-        this->printToStdout("\t2 -> submit cash");
-        this->printToStdout("\t3 -> withdraw cash");
-        std::cin >> mode;
+        mode = utils::choicePrompt({"View your account balance","Submit cash","Withdraw cash","Exit"});
         switch(mode){
         case 1:
             viewBalanceInterface("dh");
@@ -42,9 +40,14 @@ void customerCLI::mainInterface(){
         case 3:
             withdrawCashInterface("dh");
             break;
+        case 4:
+            std::cout << "Exiting..." << std::endl;
+            break;
+        default:
+            std::cout << "unsupported command Please enter a supported command : " << std::endl;
         }
     }
-    while (mode != 0);
+    while (mode != 4);
 }
 
 void customerCLI::loginInterface(){
@@ -69,8 +72,16 @@ inline void customerCLI::viewBalanceInterface(const std::string& currency){
 }
 
 void customerCLI::submitCashInterface(const std::string& currency){
+    data_mapper cashData;
+    bool isCash;
     // Read the amount of money to submit
-    data_mapper cashData = this->readUserInput({"cash"});
+    do {
+        cashData = this->readUserInput({"cash"});
+        if (!(isCash = utils::isDouble(cashData["cash"]))) {
+            this->printToStdout("Invalid cash value");
+        }
+    }
+    while(!isCash);
 
     // Submit the amount to the customer account
     this->customer->submitCash(stoi(cashData["cash"]));
@@ -79,7 +90,15 @@ void customerCLI::submitCashInterface(const std::string& currency){
 
 void customerCLI::withdrawCashInterface(const std::string& currency){
     // Read the amount of money to withdraw
-    data_mapper cashData = this->readUserInput({"cash"});
+    data_mapper cashData;
+    bool isCash;
+    do {
+        cashData = this->readUserInput({"cash"});
+        if (!(isCash = utils::isDouble(cashData["cash"]))) {
+            this->printToStdout("Invalid cash value");
+        }
+    }
+    while(!isCash);
 
     // Withdraw the amount from the customer account
     this->customer->withdrawCash(stoi(cashData["cash"]));
