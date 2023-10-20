@@ -81,9 +81,9 @@ void tellerCLI::registerNewCustomerInterface(){
     p.setPhone(newCustomer["Phone"]);
 
     account.id = std::stoi(newCustomer["Account id"]);
-    account.balance = std::stoi(newCustomer["Initial balance"]);
-    account.min = std::stoi(newCustomer["minimum"]);
-    account.currency = std::stoi(newCustomer["Currency"]);
+    account.balance = std::stod(newCustomer["Initial balance"]);
+    account.min = std::stod(newCustomer["Minimum"]);
+    account.currency = newCustomer["Currency"];
     
     this->teller->registerNewCustomer(p, newCustomer["User name"],newCustomer["Password"], account);
 }
