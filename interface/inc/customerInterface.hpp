@@ -1,3 +1,9 @@
+/*
+ * Description : The customer abstract interface header
+ * Copyright (C) 2023 Said Guouihaj
+ * Licence : GPLv3
+*/
+
 #pragma once
 
 #include <iostream>
@@ -6,11 +12,34 @@
 #include "customer.hpp"
 
 class customerInterface : public UserInterface {
-public:
-    virtual void viewBalanceInterface(std::string currency) = 0;
-    virtual void submitCashInterface(std::string currency) = 0;
-    virtual void withdrawCashInterface(std::string currency) = 0;
-    ~customerInterface() {}
 protected:
-    std::unique_ptr<Customer> customer;
+    /**
+     * @brief View balance abstract interface
+     * 
+     * @param currency the currency used
+     */
+    virtual void viewBalanceInterface(const std::string& currency) = 0;
+
+    /**
+     * @brief Submit cash abstract interface
+     * 
+     * @param currency The currency used
+     */
+    virtual void submitCashInterface(const std::string& currency) = 0;
+
+    /**
+     * @brief Withdraw cash abstract interface
+     * 
+     * @param currency The currency used
+     */
+    virtual void withdrawCashInterface(const std::string& currency) = 0;
+
+    /**
+     * @brief The pointer to customer
+     * 
+     */
+    std::unique_ptr<Customer> customer; 
+    
+public:
+    ~customerInterface() {}
 };

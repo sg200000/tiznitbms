@@ -1,17 +1,12 @@
-#include "../inc/person.hpp"
+/*
+ * Description : Person class implementation
+ * Copyright (C) 2023 Said Guouihaj
+ * Licence : GPLv3
+*/
 
-Person::Person(std::string firstName, std::string lastName){
-    this->firstName = firstName;
-    this->lastName = lastName;
-}
+#include "person.hpp"
 
-Person::Person(std::string firstName, std::string lastName, std::string email){
-    this->firstName = firstName;
-    this->lastName = lastName;
-    this->email = email;
-}
-
-Person::Person(std::string firstName, std::string lastName, std::string email, std::string phone){
+Person::Person(const std::string& firstName, const std::string& lastName, const std::string& email, const std::string& phone){
     this->firstName = firstName;
     this->lastName = lastName;
     this->email = email;
@@ -34,18 +29,18 @@ std::string Person::getPhone(){
     return this->phone;
 }
 
-void Person::setFirstName(std::string firstName){
+void Person::setFirstName(const std::string& firstName){
     this->firstName = firstName;
 }
 
-void Person::setLastName(std::string lastName){
+void Person::setLastName(const std::string& lastName){
     this->lastName = lastName;
 }
 
-void Person::setEmail(std::string email){
+void Person::setEmail(const std::string& email){
     this->email = email;
 }
 
-void Person::setPhone(std::string phone){
+void Person::setPhone(const std::string& phone){
     this->phone = phone;
 }

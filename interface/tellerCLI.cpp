@@ -1,4 +1,12 @@
-#include "inc/tellerCLI.hpp"
+/*
+ * Description : Teller command-line interface implementation
+ * Copyright (C) 2023 Said Guouihaj
+ * Licence : GPLv3
+*/
+
+#include <iostream>
+#include "tellerCLI.hpp"
+#include "utils.hpp"
 
 tellerCLI::tellerCLI() {
     std::string dbPath = "C:/Users/saidg/source/tiznitbms/bank.db";
@@ -12,13 +20,10 @@ tellerCLI::tellerCLI() {
 
 void tellerCLI::mainInterface(){
     int mode;
+    this->printToStdout("Welcome to the teller interface. Please select the operation :");
     do {
-        this->printToStdout("Welcome to the teller interface. Please select the operation :");
-        this->printToStdout("\t1 -> register a new customer");
-        this->printToStdout("\t2 -> get customer information");
-        this->printToStdout("\t3 -> update a customer information");
-        this->printToStdout("\t4 -> delete a customer");
-        std::cin >> mode;
+        mode = utils::choicePrompt({"Register a new customer","Get customer information",
+                                    "Update a customer information","Delete a customer", "Exit"});
         switch(mode){
             case 1:
                 this->registerNewCustomerInterface();
@@ -32,13 +37,18 @@ void tellerCLI::mainInterface(){
             case 4:
                 this->deleteCustomerInterface();
                 break;
+            case 5:
+                std::cout << "Exiting..." << std::endl;
+                break;
+            default:
+                std::cout << "unsupported command Please enter a supported command : " << std::endl;
         }
     }
-    while (mode != 0);
+    while (mode != 5);
 }
 
 void tellerCLI::loginInterface(){
-    data_mapper creds = this->readUserInput({"userName","password"});
+    data_mapper<std::string> creds = this->readUserInput<std::string>({"userName","password"});
     this->teller->setUserName(creds["userName"]);
     this->teller->signIn(creds["password"]);
     if (this->teller->getOnlineState()){
@@ -51,7 +61,7 @@ void tellerCLI::loginInterface(){
 
 void tellerCLI::registerNewCustomerInterface(){
     Person p;
-    data_mapper newCustomer = this->readUserInput({
+    data_mapper<std::string> newCustomer = this->readUserInput<std::string>({
         "First name",
         "Last name",
         "Email",
@@ -65,17 +75,17 @@ void tellerCLI::registerNewCustomerInterface(){
     p.setEmail(newCustomer["Email"]);
     p.setPhone(newCustomer["Phone"]);
     
-    this->teller->registerNewCustomer(p, newCustomer["User name"], newCustomer["Password"], stoi(newCustomer["Account id"]));
+    this->teller->registerNewCustomer(p, newCustomer["User name"],newCustomer["Password"], stoi(newCustomer["Account id"]));
 }
 
 void tellerCLI::updateCustomerInformationInterface(){
-    data_mapper updates = this->readUserInput({"userName","key","value"});
+    data_mapper<std::string> updates = this->readUserInput<std::string>({"userName","key","value"});
     this->teller->updateCustomerInformation(updates["userName"], updates["key"], updates["value"]);
 }
 
 void tellerCLI::getCustomerInformationInterface(){
-    data_mapper customerInfo;
-    data_mapper keyInfo = readUserInput({"userName"});
+    data_mapper<std::string> customerInfo;
+    data_mapper<std::string> keyInfo = readUserInput<std::string>({"userName"});
     customerInfo = this->teller->getCustomerInformation(keyInfo["userName"]);
     for (std::pair<std::string,std::string> info : customerInfo){
         this->printToStdout(info.first+" : "+info.second);
@@ -83,6 +93,6 @@ void tellerCLI::getCustomerInformationInterface(){
 }
 
 void tellerCLI::deleteCustomerInterface(){
-    data_mapper delKey = readUserInput({"userName"});
+    data_mapper<std::string> delKey = readUserInput<std::string>({"userName"});
     this->teller->deleteCustomer(delKey["userName"]);
 }
