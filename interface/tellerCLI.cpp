@@ -7,6 +7,7 @@
 #include <iostream>
 #include "tellerCLI.hpp"
 #include "utils.hpp"
+#include "account.hpp"
 
 tellerCLI::tellerCLI() {
     std::string dbPath = "C:/Users/saidg/source/tiznitbms/bank.db";
@@ -61,6 +62,7 @@ void tellerCLI::loginInterface(){
 
 void tellerCLI::registerNewCustomerInterface(){
     Person p;
+    Account account;
     data_mapper<std::string> newCustomer = this->readUserInput<std::string>({
         "First name",
         "Last name",
@@ -68,14 +70,22 @@ void tellerCLI::registerNewCustomerInterface(){
         "Phone",
         "User name",
         "Password",
-        "Account id"
+        "Account id",
+        "Initial balance",
+        "Minimum",
+        "Currency"
     });
     p.setFirstName(newCustomer["First name"]);
     p.setLastName(newCustomer["Last name"]);
     p.setEmail(newCustomer["Email"]);
     p.setPhone(newCustomer["Phone"]);
+
+    account.id = std::stoi(newCustomer["Account id"]);
+    account.balance = std::stod(newCustomer["Initial balance"]);
+    account.min = std::stod(newCustomer["Minimum"]);
+    account.currency = newCustomer["Currency"];
     
-    this->teller->registerNewCustomer(p, newCustomer["User name"],newCustomer["Password"], stoi(newCustomer["Account id"]));
+    this->teller->registerNewCustomer(p, newCustomer["User name"],newCustomer["Password"], account);
 }
 
 void tellerCLI::updateCustomerInformationInterface(){

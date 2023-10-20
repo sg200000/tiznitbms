@@ -38,19 +38,19 @@ protected:
      * 
      * @param currency The currency used
      */
-    void viewBalanceInterface(const std::string& currency) override;
+    void viewBalanceInterface() override;
 
     /**
      * @brief Submit cash to customer account
      * 
      * @param currency the currency used
      */
-    void submitCashInterface(const std::string& currency) override;
+    void submitCashInterface() override;
 
     /**
      * @brief Withdraw cash from customer account
      * 
      * @param currency The currency used
      */
-    void withdrawCashInterface(const std::string& currency) override;
+    void withdrawCashInterface() override;
 };
