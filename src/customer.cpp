@@ -23,28 +23,46 @@ void Customer::signIn(const std::string& password){
     }
 
     this->id = stoi(outData[0][0]);
-    this->accountId = stoi(outData[0][1]);
+    this->account.id = stoi(outData[0][1]);
+
+    outData.clear();
+    bool rc = this->db->requestData("accounts",{"min","currency"}, {{"id",std::to_string(this->account.id)}}, &outData);
+    if (!rc){
+        std::cerr << "Error : Cannot fetch data" << std::endl;
+        return;
+    }
+
+    this->account.min = std::stod(outData[0][0]);
+    this->account.currency = outData[0][1];
 }
 
-double Customer::viewBalance(){
+Balance Customer::viewBalance(){
     bool rc;
+    Balance balance;
+
     if (!this->onlineState){
         std::cerr << "you are not signed in" << std::endl;
-        return -1;
+        return balance;
     }
-    if (!this->accountId){
+    if (!this->account.id){
         std::cerr << "you don't have associated account" << std::endl;
-        return -1;
+        return balance;
     }
     std::vector<std::vector<std::string>> outData;
 
-    rc = this->db->requestData("accounts", {"balance"}, {{"id", std::to_string(this->accountId)}}, &outData);
+    rc = this->db->requestData("accounts", {"balance","currency"}, {{"id", std::to_string(this->account.id)}}, &outData);
 
     if (!rc){
         std::cerr << "Cannot get account balance" << std::endl;
-        return -1;
+        return balance;
     }
-    return stod(outData[0][0]);
+
+    // Store balance value and currency
+    balance.amount = std::stod(outData[0][0]);
+    balance.currency = outData[0][1];
+    this->account.currency = balance.currency;
+    
+    return balance;
 }
 
 bool Customer::submitCash(double amount){
@@ -52,7 +70,7 @@ bool Customer::submitCash(double amount){
         std::cerr << "you are not signed in" << std::endl;
         return false;
     }
-    if (!this->accountId){
+    if (!this->account.id){
         std::cerr << "you don't have associated account" << std::endl;
         return false;
     }
@@ -61,7 +79,7 @@ bool Customer::submitCash(double amount){
         {"balance","balance+"+std::to_string(amount)}
     }, 
     {
-        {"id",std::to_string(this->accountId)}
+        {"id",std::to_string(this->account.id)}
     });
 }
 
@@ -70,7 +88,7 @@ bool Customer::withdrawCash(double amount){
         std::cerr << "you are not signed in" << std::endl;
         return false;
     }
-    if (!this->accountId){
+    if (!this->account.id){
         std::cerr << "you don't have associated account" << std::endl;
         return false;
     }
@@ -79,6 +97,6 @@ bool Customer::withdrawCash(double amount){
         {"balance","balance-"+std::to_string(amount)}
     }, 
     {
-        {"id",std::to_string(this->accountId)}
+        {"id",std::to_string(this->account.id)}
     }); 
 }

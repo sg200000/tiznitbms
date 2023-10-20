@@ -1,6 +1,7 @@
 #include <iostream>
 #include "db.hpp"
 #include "person.hpp"
+#include "account.hpp"
 
 class Teller : public Person {
 private:
@@ -37,11 +38,11 @@ public:
      * @param customer New customer informations
      * @param userName The new customer userName
      * @param password The new customer password
-     * @param accountId The customer account id
+     * @param account The customer account informations
      * @return true if the new customer successfuly registrated
      * @return false otherwise
      */
-    bool registerNewCustomer(Person customer, const std::string& userName, const std::string& password, int accountId);
+    bool registerNewCustomer(Person customer, const std::string& userName, const std::string& password, const Account& account);
 
     /**
      * @brief Get the customer information

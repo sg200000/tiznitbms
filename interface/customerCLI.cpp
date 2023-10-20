@@ -32,13 +32,13 @@ void customerCLI::mainInterface(){
         mode = utils::choicePrompt({"View your account balance","Submit cash","Withdraw cash","Exit"});
         switch(mode){
         case 1:
-            viewBalanceInterface("dh");
+            viewBalanceInterface();
             break;
         case 2:
-            submitCashInterface("dh");
+            submitCashInterface();
             break;
         case 3:
-            withdrawCashInterface("dh");
+            withdrawCashInterface();
             break;
         case 4:
             std::cout << "Exiting..." << std::endl;
@@ -67,11 +67,12 @@ void customerCLI::loginInterface(){
     }
 }
 
-inline void customerCLI::viewBalanceInterface(const std::string& currency){
-    this->printToStdout("Balance : "+std::to_string(this->customer->viewBalance())+currency);
+void customerCLI::viewBalanceInterface(){
+    Balance balance = this->customer->viewBalance();
+    this->printToStdout("Balance : "+balance.serialize());
 }
 
-void customerCLI::submitCashInterface(const std::string& currency){
+void customerCLI::submitCashInterface(){
     data_mapper<double> cashData;
 
     // Read the amount of money to submit
@@ -79,15 +80,15 @@ void customerCLI::submitCashInterface(const std::string& currency){
 
     // Submit the amount to the customer account
     this->customer->submitCash(cashData["cash"]);
-    this->printToStdout("You just submitted "+std::to_string(cashData["cash"])+currency);
+    this->printToStdout("You just submitted "+std::to_string(cashData["cash"])+this->customer->getAccount().currency);
 }
 
-void customerCLI::withdrawCashInterface(const std::string& currency){
+void customerCLI::withdrawCashInterface(){
     // Read the amount of money to withdraw
     data_mapper<double> cashData;
     cashData = this->readUserInput<double>({"cash"});
 
     // Withdraw the amount from the customer account
     this->customer->withdrawCash(cashData["cash"]);
-    this->printToStdout("You just withdrawed "+std::to_string(cashData["cash"])+currency);
+    this->printToStdout("You just withdrawed "+std::to_string(cashData["cash"])+this->customer->getAccount().currency);
 }

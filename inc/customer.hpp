@@ -10,6 +10,7 @@
 #include <string>
 #include <memory>
 #include "person.hpp"
+#include "account.hpp"
 #include "db.hpp"
 
 class Customer : public Person {
@@ -39,7 +40,7 @@ public:
      * 
      * @return double The value of the balance
      */
-    double viewBalance();
+    Balance viewBalance();
 
     /**
      * @brief Submit cash to user account
@@ -95,10 +96,15 @@ public:
     bool getOnlineState(){
         return this->onlineState;
     }
+    
+    Account getAccount() const {
+        return this->account;
+    }
 
 private:
     std::string userName; // customer userName
-    int id, accountId; // id and accountId are successively customer and account ids 
+    int id; // id and accountId are successively customer and account ids
+    Account account;
     std::unique_ptr<DBManager> db; // A pointer to the database
     bool onlineState = false; // the customer online state initialized to false
 };

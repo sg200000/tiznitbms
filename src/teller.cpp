@@ -6,6 +6,7 @@
 
 #include "teller.hpp"
 #include "sqlite3db.hpp"
+#include "account.hpp"
 
 Teller::Teller(const std::string& dbPath) {
     this->db = std::unique_ptr<DBManager>(new Sqlite3DB(dbPath));
@@ -29,12 +30,13 @@ bool Teller::signIn(const std::string& password){
     return true;
 }
 
-bool Teller::registerNewCustomer(Person customer, const std::string& userName, const std::string& password, int accountId){
+bool Teller::registerNewCustomer(Person customer, const std::string& userName, const std::string& password, const Account& account){
     /* Create an account in accounts (initialized balance = 0) */
     bool rc = this->db->insertData("accounts", {
-        {"id",std::to_string(accountId)},
-        {"balance","0.0"},
-        {"min","0.0"}
+        {"id",std::to_string(account.id)},
+        {"balance",std::to_string(account.balance)},
+        {"min",std::to_string(account.min)},
+        {"currency",account.currency}
     });
     if (!rc){
         std::cerr << "Cannot create account" << std::endl;
@@ -47,7 +49,7 @@ bool Teller::registerNewCustomer(Person customer, const std::string& userName, c
         {"lastName", customer.getLastName()},
         {"email", customer.getEmail()},
         {"phone", customer.getPhone()},
-        {"accountId", std::to_string(accountId)},
+        {"accountId", std::to_string(account.id)},
         {"userName",userName},
         {"password",password}
     });

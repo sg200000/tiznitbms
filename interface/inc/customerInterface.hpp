@@ -18,21 +18,21 @@ protected:
      * 
      * @param currency the currency used
      */
-    virtual void viewBalanceInterface(const std::string& currency) = 0;
+    virtual void viewBalanceInterface() = 0;
 
     /**
      * @brief Submit cash abstract interface
      * 
      * @param currency The currency used
      */
-    virtual void submitCashInterface(const std::string& currency) = 0;
+    virtual void submitCashInterface() = 0;
 
     /**
      * @brief Withdraw cash abstract interface
      * 
      * @param currency The currency used
      */
-    virtual void withdrawCashInterface(const std::string& currency) = 0;
+    virtual void withdrawCashInterface() = 0;
 
     /**
      * @brief The pointer to customer
