@@ -52,7 +52,7 @@ void customerCLI::mainInterface(){
 
 void customerCLI::loginInterface(){
     // Read userName and password as a map
-    data_mapper creds = this->readUserInput({"userName","password"});
+    data_mapper<std::string> creds = this->readUserInput<std::string>({"userName","password"});
 
     // Set the userName to the customer an try signing in 
     this->customer->setUserName(creds["userName"]);
@@ -72,35 +72,22 @@ inline void customerCLI::viewBalanceInterface(const std::string& currency){
 }
 
 void customerCLI::submitCashInterface(const std::string& currency){
-    data_mapper cashData;
-    bool isCash;
+    data_mapper<double> cashData;
+
     // Read the amount of money to submit
-    do {
-        cashData = this->readUserInput({"cash"});
-        if (!(isCash = utils::isDouble(cashData["cash"]))) {
-            this->printToStdout("Invalid cash value");
-        }
-    }
-    while(!isCash);
+    cashData = this->readUserInput<double>({"cash"});
 
     // Submit the amount to the customer account
-    this->customer->submitCash(stoi(cashData["cash"]));
-    this->printToStdout("You just submitted "+cashData["cash"]+currency);
+    this->customer->submitCash(cashData["cash"]);
+    this->printToStdout("You just submitted "+std::to_string(cashData["cash"])+currency);
 }
 
 void customerCLI::withdrawCashInterface(const std::string& currency){
     // Read the amount of money to withdraw
-    data_mapper cashData;
-    bool isCash;
-    do {
-        cashData = this->readUserInput({"cash"});
-        if (!(isCash = utils::isDouble(cashData["cash"]))) {
-            this->printToStdout("Invalid cash value");
-        }
-    }
-    while(!isCash);
+    data_mapper<double> cashData;
+    cashData = this->readUserInput<double>({"cash"});
 
     // Withdraw the amount from the customer account
-    this->customer->withdrawCash(stoi(cashData["cash"]));
-    this->printToStdout("You just withdrawed "+cashData["cash"]+currency);
+    this->customer->withdrawCash(cashData["cash"]);
+    this->printToStdout("You just withdrawed "+std::to_string(cashData["cash"])+currency);
 }

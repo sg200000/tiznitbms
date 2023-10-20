@@ -90,19 +90,25 @@ bool Teller::updateCustomerInformation(const std::string& userName, const std::s
 }
 
 bool Teller::deleteCustomer(const std::string& userName){
-    // To delete a customer the account record should be delated
-    int accountId = std::stoi(this->getCustomerInformation(userName)["accountId"]);
-    
-    bool rc = this->db->deleteData("customers",{{"userName", userName}});
-    
+    // Guard if the user doesn't exists
+    std::unordered_map<std::string,std::string> customerInfo = this->getCustomerInformation(userName);
+    if (customerInfo.empty()){
+        std::cerr << "The customer doesn't exist" << std::endl;
+        return false;
+    }
+
+    // Delete the customer
+    bool rc = this->db->deleteData("customers",{{"userName", userName}}); 
+
     if (!rc){
         std::cerr << "Couldn't delete the customer " << userName << std::endl;
         return false;
     }
 
-    // Then the user record
+    // Get the accountId and delete the account record
+    int accountId = std::stoi(customerInfo["accountId"]);
     rc = this->db->deleteData("accounts",{{"id", std::to_string(accountId)}});
-    
+
     if (!rc){
         std::cout << "Couldn' delete account number " << accountId << std::endl;
         return false;

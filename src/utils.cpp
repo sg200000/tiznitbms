@@ -38,17 +38,8 @@ bool utils::isNumeric(const std::string& str) {
     return true;
 }
 
-bool utils::isDouble(const std::string& str) {
-    try {
-        std::stod(str);
-        return true;
-    } catch (const std::invalid_argument& e) {
-        return false;
-    }
-}
-
 int utils::choicePrompt(const std::vector<std::string>& choices){
-    // Read mode as a ser input
+    // Read mode as a user input
     std::string input;
     int mode;
     for (int i = 0; i < choices.size(); i++){

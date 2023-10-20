@@ -7,12 +7,14 @@
 #pragma once
 
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
 // This is an alias of data map used in various read data operations
-using data_mapper = std::unordered_map<std::string,std::string>;
+template<typename Type>
+using data_mapper = std::unordered_map<std::string,Type>;
 
 class UserInterface {
 protected:
@@ -22,13 +24,27 @@ protected:
      * @param toRead key data to read (vector of keys)
      * @return data_mapper A map of data (key, value)
      */
-    data_mapper readUserInput(std::vector<std::string> toRead) {
-        std::unordered_map<std::string,std::string> userData;
-        std::string temp;
+    template<typename T>
+    data_mapper<T> readUserInput(std::vector<std::string> toRead) {
+        std::unordered_map<std::string,T> userData;
+        std::string rawInput;
+        T validInput;
+        bool state;
+
+        // Read each requested value and insert
         for (std::string key : toRead){
-            printToStdout(key, " : ");
-            std::cin >> temp;
-            userData.insert(std::make_pair(key,temp));
+            // Loop until a valid value read
+            do {
+                printToStdout(key, " : ");
+                std::cin >> rawInput;
+                std::istringstream ss(rawInput);
+                state = (bool)(ss >> validInput);
+                if (!state){
+                    printToStdout("Invalid input");
+                }
+            }
+            while(!state);
+            userData.insert(std::make_pair(key,validInput));
         }
         return userData;
     }

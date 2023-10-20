@@ -39,15 +39,7 @@ namespace utils {
      * @return false Otherwise
      */
     bool isNumeric(const std::string& str);
-
-    /**
-     * @brief Check if astring is a double
-     * 
-     * @param str The reference to string
-     * @return true If a double
-     * @return false Otherwise
-     */
-    bool isDouble(const std::string& str);
+    
     /**
      * @brief command prompt for multiple choice interface
      * 

@@ -48,7 +48,7 @@ void tellerCLI::mainInterface(){
 }
 
 void tellerCLI::loginInterface(){
-    data_mapper creds = this->readUserInput({"userName","password"});
+    data_mapper<std::string> creds = this->readUserInput<std::string>({"userName","password"});
     this->teller->setUserName(creds["userName"]);
     this->teller->signIn(creds["password"]);
     if (this->teller->getOnlineState()){
@@ -61,7 +61,7 @@ void tellerCLI::loginInterface(){
 
 void tellerCLI::registerNewCustomerInterface(){
     Person p;
-    data_mapper newCustomer = this->readUserInput({
+    data_mapper<std::string> newCustomer = this->readUserInput<std::string>({
         "First name",
         "Last name",
         "Email",
@@ -79,13 +79,13 @@ void tellerCLI::registerNewCustomerInterface(){
 }
 
 void tellerCLI::updateCustomerInformationInterface(){
-    data_mapper updates = this->readUserInput({"userName","key","value"});
+    data_mapper<std::string> updates = this->readUserInput<std::string>({"userName","key","value"});
     this->teller->updateCustomerInformation(updates["userName"], updates["key"], updates["value"]);
 }
 
 void tellerCLI::getCustomerInformationInterface(){
-    data_mapper customerInfo;
-    data_mapper keyInfo = readUserInput({"userName"});
+    data_mapper<std::string> customerInfo;
+    data_mapper<std::string> keyInfo = readUserInput<std::string>({"userName"});
     customerInfo = this->teller->getCustomerInformation(keyInfo["userName"]);
     for (std::pair<std::string,std::string> info : customerInfo){
         this->printToStdout(info.first+" : "+info.second);
@@ -93,6 +93,6 @@ void tellerCLI::getCustomerInformationInterface(){
 }
 
 void tellerCLI::deleteCustomerInterface(){
-    data_mapper delKey = readUserInput({"userName"});
+    data_mapper<std::string> delKey = readUserInput<std::string>({"userName"});
     this->teller->deleteCustomer(delKey["userName"]);
 }
