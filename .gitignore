@@ -36,3 +36,6 @@
 .vs
 build
 vc140.pdb
+
+# databse files
+*.db
