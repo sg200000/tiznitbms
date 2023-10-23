@@ -61,11 +61,11 @@ nlohmann::json utils::parseJsonFile(const std::string& filePath){
     std::ifstream jsonFile(filePath);
     if (!jsonFile.is_open()) {
         std::cerr << "Failed to open the file." << std::endl;
-        return json_data;
+        return jsonData;
     }
 
     // Parse the JSON data
-    jsonFile >> json_data;
+    jsonFile >> jsonData;
 
     // Close the file
     jsonFile.close();
