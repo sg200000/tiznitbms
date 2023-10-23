@@ -8,9 +8,17 @@
 #include "tellerCLI.hpp"
 #include "utils.hpp"
 #include "account.hpp"
+#include <nlohmann/json.hpp>
 
 tellerCLI::tellerCLI() {
-    std::string dbPath = "C:/Users/saidg/source/tiznitbms/bank.db";
+    // Get the database path from db.json
+    nlohmann::json db_json = utils::parseJsonFile("C:/Users/saidg/source/tiznitbms/db.json");
+    if (db_json.empty()){
+        std::cerr << "Cannot parse db.json" << std::endl;
+        return;
+    }
+    std::string dbPath = db_json["path"];
+    
     this->teller = std::unique_ptr<Teller>(new Teller(dbPath));
     do {
         this->loginInterface();

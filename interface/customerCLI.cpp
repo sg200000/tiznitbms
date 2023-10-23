@@ -6,10 +6,16 @@
 
 #include "customerCLI.hpp"
 #include "utils.hpp"
+#include <nlohmann/json.hpp>
 
 customerCLI::customerCLI(){
-    // Bank database filepath (note that this version uses sqlite3)
-    std::string dbPath = "C:/Users/saidg/source/tiznitbms/bank.db";
+    // Get the database path from db.json
+    nlohmann::json db_json = utils::parseJsonFile("C:/Users/saidg/source/tiznitbms/db.json");
+    if (db_json.empty()){
+        std::cerr << "Cannot parse db.json";
+        return;
+    }
+    std::string dbPath = db_json["path"];
 
     // initialize the customer
     this->customer = std::unique_ptr<Customer>(new Customer(dbPath));

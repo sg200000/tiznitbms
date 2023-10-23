@@ -37,5 +37,6 @@
 build
 vc140.pdb
 
-# databse files
+# database and json files
 *.db
+*.json

@@ -11,6 +11,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 namespace utils {
     /**
@@ -47,4 +48,12 @@ namespace utils {
      * @return int The user choice (if the choice is a non-int return -1)
      */
     int choicePrompt(const std::vector<std::string>& choices);
+
+    /**
+     * @brief Parse JSON file
+     * 
+     * @param filePath File path
+     * @return nlohmann::json json Object 
+     */
+    nlohmann::json parseJsonFile(const std::string& filePath);
 }
