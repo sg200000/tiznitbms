@@ -11,6 +11,15 @@ FetchContent_MakeAvailable(json)
 
 add_library(sqlite3 lib/src/sqlite3.c)
 
+# Create a constant of current project path
+set(BASE_PATH "${CMAKE_CURRENT_LIST_DIR}")
+
+# Generate a config header file with the The base project path
+configure_file(
+    ${CMAKE_SOURCE_DIR}/inc/config.hpp.in
+    ${CMAKE_SOURCE_DIR}/inc/config.hpp
+)
+
 add_executable(main 
     main.cpp
     interface/customerCLI.cpp
