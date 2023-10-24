@@ -1,8 +1,9 @@
 ---
 project_name: tiznitbms
+version: 1.0.0
+licence: GPL3
 ---
 
-# {{ page.project_name }}
 # Check dependencies
 ## Check python installed
 
