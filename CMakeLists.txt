@@ -34,3 +34,5 @@ add_executable(main
 
 target_include_directories(main PUBLIC inc interface/inc lib/inc)
 target_link_libraries(main PRIVATE sqlite3 nlohmann_json::nlohmann_json)
+
+install(TARGETS main DESTINATION bin)
