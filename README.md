@@ -1,3 +1,8 @@
+---
+project_name: tiznitbms
+---
+
+# {{ page.project_name }}
 # Check dependencies
 ## Check python installed
 
@@ -18,4 +23,16 @@ pip install sqlite3
 ```bash
 cd automation
 python ./generate_db.py
+```
+
+# Build and install software
+
+To build and install software run the following command
+
+```bash
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/custom/installation/directory ..
+cmake --build .
+cmake --install .
 ```
