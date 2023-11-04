@@ -18,7 +18,7 @@ struct Account {
 struct Balance {
     double amount = -1;
     std::string currency;
-    inline std::string serialize(){
+    std::string serialize(){
         return std::to_string(amount)+currency;
     }
 };

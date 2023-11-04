@@ -1,9 +1,0 @@
-/*
- * Description : This file contains config time constants
- * Copyright (C) 2023 Said Guouihaj
- * Licence : GPLv3
-*/
-
-#pragma once
-
-#define BASE_PATH "${BASE_PATH}"

@@ -4,11 +4,11 @@
  * Licence : GPLv3
 */
 
+#pragma once
+
 #include <iostream>
 #include <string>
 
-#ifndef PERSON_H
-#define PERSON_H
 class Person {
 public:
     /**
@@ -81,4 +81,3 @@ private:
     std::string firstName, lastName;
     std::string phone, email;
 };
-#endif

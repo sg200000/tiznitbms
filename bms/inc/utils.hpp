@@ -11,6 +11,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <vector>
+#include <sqlite3.h>
 #include <nlohmann/json.hpp>
 
 namespace utils {
@@ -31,6 +32,14 @@ namespace utils {
      * @return std::string The serialized vector
      */
     std::string serialize(std::vector<std::string> vec, std::string sep = ",");
+
+    /**
+     * @brief Serialize a text file
+     * 
+     * @param filePath The path of the text file
+     * @return std::string The serialized file
+     */
+    std::string serialize(const std::filesystem::path filePath);
 
     /**
      * @brief Check if a string is numeric
@@ -55,5 +64,13 @@ namespace utils {
      * @param filePath File path
      * @return nlohmann::json json Object 
      */
-    nlohmann::json parseJsonFile(const std::string& filePath);
+    nlohmann::json parseJsonFile(const std::filesystem::path& filePath);
+
+    /**
+     * @brief Save JSON data into file
+     * 
+     * @param filePath The target file path
+     * @param data JSON data to save
+     */
+    void saveToJsonFile(const std::filesystem::path filePath, nlohmann::json data);
 }

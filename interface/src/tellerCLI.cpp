@@ -8,13 +8,11 @@
 #include "tellerCLI.hpp"
 #include "utils.hpp"
 #include "account.hpp"
-#include "config.hpp"
 #include <nlohmann/json.hpp>
 
 tellerCLI::tellerCLI() {
     // Get the database path from db.json
-    std::string basePath(BASE_PATH);
-    nlohmann::json db_json = utils::parseJsonFile(basePath+"/db.json");
+    nlohmann::json db_json = utils::parseJsonFile("db.json");
     if (db_json.empty()){
         std::cerr << "Cannot parse db.json" << std::endl;
         return;

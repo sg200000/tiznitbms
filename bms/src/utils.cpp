@@ -8,6 +8,7 @@
 #include <cctype>
 #include <fstream>
 #include <memory>
+#include <filesystem>
 #include <nlohmann/json.hpp>
 
 std::string utils::serialize(std::unordered_map<std::string,std::string> map, std::string sep){
@@ -53,7 +54,7 @@ int utils::choicePrompt(const std::vector<std::string>& choices){
     return mode;
 }
 
-nlohmann::json utils::parseJsonFile(const std::string& filePath){
+nlohmann::json utils::parseJsonFile(const std::filesystem::path& filePath){
     // Initlialize empty JSON object
     nlohmann::json jsonData = nlohmann::json::object();
 
@@ -71,4 +72,33 @@ nlohmann::json utils::parseJsonFile(const std::string& filePath){
     jsonFile.close();
 
     return jsonData;
+}
+
+std::string utils::serialize(const std::filesystem::path filePath){
+    std::string serialized;
+
+    // try openeing the file
+    std::ifstream file(filePath);
+
+    // Guard if the file is not opened
+    if (!file.is_open()) {
+        std::cerr << "Error opening file." << std::endl;
+        return serialized;
+    }
+
+    // Serialize line by line
+    std::string line;
+    while (std::getline(file, line)) {
+        serialized += line + "\n";
+    }
+    file.close();
+
+    return serialized;
+}
+
+void utils::saveToJsonFile(const std::filesystem::path filePath, nlohmann::json data){
+    // Serialize and save the data to the file
+    std::ofstream jsonFile(filePath);
+    jsonFile << data.dump(4);  // The argument 4 is for pretty-printing the JSON
+    jsonFile.close();
 }
