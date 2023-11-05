@@ -10,6 +10,9 @@
 bool DBManager::deleteData(const std::string& tableName, std::unordered_map<std::string,std::string> conditions){
     std::string sql;
     std::stringstream sqlBuilder;
+
+    // Get column types
+    std::unordered_map<std::string, sqlType> tableHeader = requestTableHeader(tableName);
     
     // Build SQL query with serialized data
     sqlBuilder << "DELETE FROM " << tableName;
