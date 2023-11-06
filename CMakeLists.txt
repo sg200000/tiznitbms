@@ -49,4 +49,4 @@ add_executable(main main.cpp
 target_link_libraries(main nlohmann_json::nlohmann_json sqlite3)
 target_include_directories(main PUBLIC interface/inc bms/inc init/inc)
 
-install(TARGETS main DESTINATION "/")
+install(TARGETS main DESTINATION ".")
