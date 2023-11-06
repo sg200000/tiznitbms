@@ -30,8 +30,8 @@ To build and install software run the following command
 ```bash
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/custom/installation/directory ..
-cmake --build .
+cmake -DCMAKE_INSTALL_PREFIX=/custom/installation/directory ..
+cmake --build . --config Release
 ```
 
 To run the software execute the following commands :
