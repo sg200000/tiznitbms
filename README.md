@@ -25,20 +25,20 @@ The database contains 4 tables:
 
 # Build and install software
 
-To build and install software run the following command
+To build and install software run the following command. set <custom_install_dir> to your target installation directory
 
 ```bash
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=/custom/installation/directory ..
+cmake -DCMAKE_INSTALL_PREFIX=<custom_install_directory> ..
 cmake --build . --config Release
 ```
 
 To run the software execute the following commands :
 
 ```bash
-cd /path/to/project
-/custom/installation/directory/main
+cd <custom_install_dir>
+./main
 ```
 
 For the first time an initialization step is done by generating a bank.db database file with necessary tables.
