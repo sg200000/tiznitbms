@@ -1,31 +1,22 @@
-#include <iostream>
-#include <utility>
-#include <sqlite3.h>
-#include "main.hpp"
-#include "inc/customer.hpp"
+/*
+ * Description : This is the main Bank management system interface
+ * Copyright (C) 2023 Said Guouihaj
+ * Licence : GPLv3
+*/
 
+#include <filesystem>
+#include "initializer.hpp"
+#include "mainCLI.hpp"
 
-int main(){
-  int mode;
-  std::cout << "Hello this is the bank management system please choose the mode :" << std::endl;
-  std::cout << "\t1 -> customer mode\n\t2 -> teller mode" << std::endl;
-  std::cin >> mode;
-  switch (mode){
-    case 1:
-      mainCustomer();
-      break;
-    case 2:
-      mainTeller();
-      break;
+int main(int argc, char* argv[]){
+  // initiaze database for the first time
+  std::filesystem::path dbJson = "db.json";
+  if (!std::filesystem::exists(dbJson)) {
+    initializer(argc,argv);
   }
-  return 0;
-}
 
-std::pair<std::string,std::string> loginInterface(){
-  std::string userName, password;
-  std::cout << "User name : ";
-  std::cin >> userName;
-  std::cout << "password : ";
-  std::cin >> password;
-  return std::make_pair(userName, password);
+  // Run main interface
+  mainCLI();
+  
+  return 0;
 }

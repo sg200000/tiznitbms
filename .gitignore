@@ -36,3 +36,7 @@
 .vs
 build
 vc140.pdb
+
+# database and json files
+*.db
+*.json
