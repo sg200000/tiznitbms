@@ -1,5 +1,5 @@
 ---
-project_name: Bank management system
+project_name: tiznitbms
 version: 1.0.0
 licence: GPLv3
 ---
