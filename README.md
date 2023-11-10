@@ -1,5 +1,5 @@
 ---
-project_name: tiznitbms
+project_name: Bank management system
 version: 1.0.0
 licence: GPLv3
 ---
@@ -19,7 +19,7 @@ This is bank management system with 2 roles : **Teller** and **Customer**
     - Withdraw cash
 
 The database contains 4 tables:
-- **Customers** : customers informations with each person has an account id
+- **Customers** : Customers informations with each person has an account id
 - **Accounts** : Contains account informations the id is the customer account id
 - **Tellers** : Tellers informations (initialized with one teller with admin:admin as userName:password)
 
@@ -30,8 +30,22 @@ To build and install software run the following command. set <custom_install_dir
 ```bash
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=<custom_install_directory> ..
+```
+To build with linux use the following build commands:
+```bash
+cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_INSTALL_PREFIX=<custom_install_directoy> ..
+cmake --build .
+```
+
+To build in Windows with visual studio use the following:
+```bash
+cmake -DCMAKE_INSTALL_PREFIX=<custom_install_directoy> ..
 cmake --build . --config Release
+```
+
+Finally run the installation command:
+```bash
+cmake --install .
 ```
 
 To run the software execute the following commands :
@@ -44,7 +58,7 @@ cd <custom_install_dir>
 For the first time an initialization step is done by generating a bank.db database file with necessary tables.
 
 # User interface
-This version is work with a CLI (Command-line interface). The main interface as following :
+This version is a CLI (Command-line interface). The main interface as following :
 
 ![main CLI](doc/images/mainCLI.png)
 

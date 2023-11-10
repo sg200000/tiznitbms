@@ -6,13 +6,16 @@ project(tiznitbms)
 set(CMAKE_CXX_STANDARD 20)
 
 ## External libraries
+# nlohamann_json
 include(FetchContent)
 FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz)
 FetchContent_MakeAvailable(json)
 
-## Build internal libraries and executables
+# sqlite3
 add_subdirectory(lib)
 
+## Build the executable
+# Set sources 
 set(INTERFACE_SOURCES
     interface/src/mainCLI.cpp
     interface/src/customerCLI.cpp
@@ -38,7 +41,9 @@ set(INIT_SOURCES
     init/src/initializer.cpp
 )
 
-add_executable(main main.cpp
+# Build the main executable
+add_executable(main 
+    main.cpp
     ${INTERFACE_SOURCES}
     ${INIT_SOURCES}
     ${SYSTEM_SOURCES}
@@ -46,8 +51,10 @@ add_executable(main main.cpp
     ${UTILS_SOURCES}
 )
 
+## Link the main executable json and sqlite3 libraries
 target_link_libraries(main nlohmann_json::nlohmann_json sqlite3)
 target_include_directories(main PUBLIC interface/inc bms/inc init/inc)
 
+## Install the target
 install(TARGETS main DESTINATION ".")
 install(FILES sql/generate_db.sql DESTINATION "sql")
