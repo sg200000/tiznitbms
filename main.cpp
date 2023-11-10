@@ -4,38 +4,19 @@
  * Licence : GPLv3
 */
 
-#include <iostream>
-#include <string>
-#include <memory>
-#include "utils.hpp"
-#include "userInterface.hpp"
-#include "customerCLI.hpp"
-#include "tellerCLI.hpp"
+#include <filesystem>
+#include "initializer.hpp"
+#include "mainCLI.hpp"
 
-int main(){
-  // User interface declaration (polymorphic type)
-  std::unique_ptr<UserInterface> interface;
+int main(int argc, char* argv[]){
+  // initiaze database for the first time
+  std::filesystem::path dbJson = "db.json";
+  if (!std::filesystem::exists(dbJson)) {
+    initializer(argc,argv);
+  }
 
-  // The mode to use (customer or teller)
-  int mode;
-  std::cout << "Hello this is the bank management system please choose the mode :" << std::endl;
-  // Read user input and instanciate the interface based on user input
-  do {
-    // Read mode as a user input
-    mode = utils::choicePrompt({"Customer mode", "Teller mode", "Exit"});
-    switch (mode){
-      case 1:
-        interface = std::unique_ptr<UserInterface>(new customerCLI());
-        return 0;
-      case 2:
-        interface = std::unique_ptr<UserInterface>(new tellerCLI());
-        return 0;
-      case 3:
-        std::cout << "Exiting..." << std::endl;
-        break;
-      default:
-        std::cout << "Unsupported command Please enter a supported command : " << std::endl;
-    }
-  }while(mode != 3);
+  // Run main interface
+  mainCLI();
+  
   return 0;
 }
