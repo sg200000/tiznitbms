@@ -93,6 +93,15 @@ bool Customer::withdrawCash(double amount){
         return false;
     }
 
+    std::vector<std::vector<std::string>> outData;
+
+    bool rc = this->db->requestData("accounts", {"balance"}, {{"id",std::to_string(this->account.id)}},&outData);
+
+    if (stod(outData[0][0]) - amount < this->account.min){
+        std::cerr << "You cannot got your account less than the minimum" << std::endl;
+        return false;
+    }
+
     return this->db->updateData("accounts", {
         {"balance","balance-"+std::to_string(amount)}
     }, 
