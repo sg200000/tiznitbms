@@ -5,6 +5,7 @@
 */
 
 #include "teller.hpp"
+#include <functional>
 #include "account.hpp"
 #include "dbFactory.hpp"
 
@@ -51,7 +52,7 @@ bool Teller::registerNewCustomer(Person customer, const std::string& userName, c
         {"phone", customer.getPhone()},
         {"accountId", std::to_string(account.id)},
         {"userName",userName},
-        {"password",password}
+        {"password",std::to_string(std::hash<std::string>{}(password))}
     });
 
     if (!rc){

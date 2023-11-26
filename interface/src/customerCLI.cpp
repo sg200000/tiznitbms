@@ -5,6 +5,7 @@
 */
 
 #include "customerCLI.hpp"
+#include <functional>
 #include "utils.hpp"
 #include <nlohmann/json.hpp>
 
@@ -54,7 +55,7 @@ void customerCLI::loginInterface(){
 
     // Set the userName to the customer an try signing in 
     this->customer->setUserName(creds["userName"]);
-    this->customer->signIn(creds["password"]);
+    this->customer->signIn(std::to_string(std::hash<std::string>{}(creds["password"])));
 
     // Print login state to the user
     if (this->customer->getOnlineState()){

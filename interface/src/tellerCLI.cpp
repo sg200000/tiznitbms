@@ -5,6 +5,7 @@
 */
 
 #include <iostream>
+#include <functional>
 #include "tellerCLI.hpp"
 #include "utils.hpp"
 #include "account.hpp"
@@ -52,7 +53,7 @@ void tellerCLI::mainInterface(){
 void tellerCLI::loginInterface(){
     data_mapper<std::string> creds = this->readUserInput<std::string>({"userName","password"});
     this->teller->setUserName(creds["userName"]);
-    this->teller->signIn(creds["password"]);
+    this->teller->signIn(std::to_string(std::hash<std::string>{}(creds["password"])));
     if (this->teller->getOnlineState()){
         this->printToStdout("login successful");
     }
