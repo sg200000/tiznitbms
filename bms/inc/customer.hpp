@@ -18,9 +18,8 @@ public:
     /**
      * @brief Construct a new Customer object
      * 
-     * @param dbPath The path of bank database
      */
-    Customer(const std::string& dbPath);
+    Customer();
 
     /**
      * @brief Destroy the Customer object

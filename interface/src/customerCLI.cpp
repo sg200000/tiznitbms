@@ -9,16 +9,8 @@
 #include <nlohmann/json.hpp>
 
 customerCLI::customerCLI(){
-    // Get the database path from db.json
-    nlohmann::json db_json = utils::parseJsonFile("db.json");
-    if (db_json.empty()){
-        std::cerr << "Cannot parse db.json";
-        return;
-    }
-    std::string dbPath = db_json["path"];
-
     // initialize the customer
-    this->customer = std::unique_ptr<Customer>(new Customer(dbPath));
+    this->customer = std::unique_ptr<Customer>(new Customer());
 
     // try login
     do {

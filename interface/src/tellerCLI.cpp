@@ -11,15 +11,8 @@
 #include <nlohmann/json.hpp>
 
 tellerCLI::tellerCLI() {
-    // Get the database path from db.json
-    nlohmann::json db_json = utils::parseJsonFile("db.json");
-    if (db_json.empty()){
-        std::cerr << "Cannot parse db.json" << std::endl;
-        return;
-    }
-    std::string dbPath = db_json["path"];
-    
-    this->teller = std::unique_ptr<Teller>(new Teller(dbPath));
+    // initialize the customer
+    this->teller = std::unique_ptr<Teller>(new Teller());
     do {
         this->loginInterface();
     }

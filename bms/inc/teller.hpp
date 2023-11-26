@@ -14,9 +14,8 @@ public:
     /**
      * @brief Construct a new Teller object
      * 
-     * @param dbPath The bank database path
      */
-    Teller(const std::string& dbPath);
+    Teller();
 
     /**
      * @brief Destroy the Teller object

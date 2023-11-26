@@ -6,22 +6,24 @@
 #include <memory>
 #include "utils.hpp"
 #include "db.hpp"
-#include "sqlite3db.hpp"
+#include "dbFactory.hpp"
 
 int initializer(int argc, char* argv[]) {
-    std::string databaseFile = (argc > 1) ? argv[1] : "bank.db";
-    const std::filesystem::path sqlFile = "sql/generate_db.sql";
+    const std::filesystem::path bankSql = "sql/bank.sql";
+    const std::filesystem::path bankDb = "bank.db";
     
-    std::unique_ptr<DBManager> conn = std::unique_ptr<DBManager>(new Sqlite3DB(databaseFile));
-    bool rc = conn->executeSqlFile(sqlFile);
-    
+    if (!utils::initializeDb("tellers", bankSql)){
+        std::cerr << "Cannot generate bank database" << std::endl;
+        return -1;
+    }
+
     nlohmann::json data = {
         {"db", "sqlite3"},
-        {"path", (std::filesystem::current_path() / databaseFile).string()}
+        {"bank", bankDb.string()},
     };
 
     // Specify the file path where you want to save the JSON data
-    const std::filesystem::path filePath = std::filesystem::current_path() / "db.json";
+    const std::filesystem::path filePath = "db.json";
     utils::saveToJsonFile(filePath, data);
     std::cout << "Bank database generated successfully." << std::endl;
     return 0;

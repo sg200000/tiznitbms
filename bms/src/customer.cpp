@@ -4,12 +4,12 @@
  * Licence : GPLv3
 */
 
-#include "sqlite3db.hpp"
+#include "dbFactory.hpp"
 #include "customer.hpp"
 #include <unordered_map>
 
-Customer::Customer(const std::string& dbPath){
-    this->db = std::unique_ptr<DBManager>(new Sqlite3DB(dbPath));
+Customer::Customer(){
+    this->db = DbFactory::createDb(DbFactory::SQLITE3, "bank");
 }
 
 void Customer::signIn(const std::string& password){

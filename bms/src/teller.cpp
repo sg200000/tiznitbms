@@ -5,11 +5,11 @@
 */
 
 #include "teller.hpp"
-#include "sqlite3db.hpp"
 #include "account.hpp"
+#include "dbFactory.hpp"
 
-Teller::Teller(const std::string& dbPath) {
-    this->db = std::unique_ptr<DBManager>(new Sqlite3DB(dbPath));
+Teller::Teller() {
+    this->db = DbFactory::createDb(DbFactory::SQLITE3, "bank");
 }
 
 bool Teller::signIn(const std::string& password){
