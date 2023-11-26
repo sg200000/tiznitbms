@@ -5,21 +5,15 @@
 */
 
 #include <iostream>
+#include <functional>
 #include "tellerCLI.hpp"
 #include "utils.hpp"
 #include "account.hpp"
 #include <nlohmann/json.hpp>
 
 tellerCLI::tellerCLI() {
-    // Get the database path from db.json
-    nlohmann::json db_json = utils::parseJsonFile("db.json");
-    if (db_json.empty()){
-        std::cerr << "Cannot parse db.json" << std::endl;
-        return;
-    }
-    std::string dbPath = db_json["path"];
-    
-    this->teller = std::unique_ptr<Teller>(new Teller(dbPath));
+    // initialize the customer
+    this->teller = std::unique_ptr<Teller>(new Teller());
     do {
         this->loginInterface();
     }
@@ -59,7 +53,7 @@ void tellerCLI::mainInterface(){
 void tellerCLI::loginInterface(){
     data_mapper<std::string> creds = this->readUserInput<std::string>({"userName","password"});
     this->teller->setUserName(creds["userName"]);
-    this->teller->signIn(creds["password"]);
+    this->teller->signIn(std::to_string(std::hash<std::string>{}(creds["password"])));
     if (this->teller->getOnlineState()){
         this->printToStdout("login successful");
     }

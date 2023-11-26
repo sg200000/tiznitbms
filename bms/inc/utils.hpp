@@ -73,4 +73,14 @@ namespace utils {
      * @param data JSON data to save
      */
     void saveToJsonFile(const std::filesystem::path filePath, nlohmann::json data);
+
+    /**
+     * @brief create a new database
+     * 
+     * @param dbName database name
+     * @param sqlPath path to SQL file containing initialization instructions
+     * @return true if the database initialized successfully
+     * @return false otherwises
+     */
+    bool initializeDb(std::string dbName, std::filesystem::path sqlPath);
 }

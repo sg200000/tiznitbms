@@ -10,6 +10,8 @@
 #include <memory>
 #include <filesystem>
 #include <nlohmann/json.hpp>
+#include "db.hpp"
+#include "dbFactory.hpp"
 
 std::string utils::serialize(std::unordered_map<std::string,std::string> map, std::string sep){
     std::stringstream serialized;
@@ -101,4 +103,9 @@ void utils::saveToJsonFile(const std::filesystem::path filePath, nlohmann::json 
     std::ofstream jsonFile(filePath);
     jsonFile << data.dump(4);  // The argument 4 is for pretty-printing the JSON
     jsonFile.close();
+}
+
+bool utils::initializeDb(std::string dbName, std::filesystem::path sqlPath){
+    std::unique_ptr<DBManager> conn = DbFactory::createDb(DbFactory::SQLITE3, dbName);
+    return conn->executeSqlFile(sqlPath);
 }

@@ -4,12 +4,12 @@
  * Licence : GPLv3
 */
 
-#include "sqlite3db.hpp"
+#include "dbFactory.hpp"
 #include "customer.hpp"
 #include <unordered_map>
 
-Customer::Customer(const std::string& dbPath){
-    this->db = std::unique_ptr<DBManager>(new Sqlite3DB(dbPath));
+Customer::Customer(){
+    this->db = DbFactory::createDb(DbFactory::SQLITE3, "bank");
 }
 
 void Customer::signIn(const std::string& password){
@@ -90,6 +90,15 @@ bool Customer::withdrawCash(double amount){
     }
     if (!this->account.id){
         std::cerr << "you don't have associated account" << std::endl;
+        return false;
+    }
+
+    std::vector<std::vector<std::string>> outData;
+
+    bool rc = this->db->requestData("accounts", {"balance"}, {{"id",std::to_string(this->account.id)}},&outData);
+
+    if (stod(outData[0][0]) - amount < this->account.min){
+        std::cerr << "You cannot got your account less than the minimum" << std::endl;
         return false;
     }
 

@@ -30,4 +30,4 @@ CREATE TABLE "tellers" (
 );
 
 INSERT INTO "tellers" ("firstName","lastName","email","phone","userName","password") 
-VALUES ("admin","admin","admin@gmail.com","0612356789","admin","admin");
+VALUES ("admin","admin","admin@gmail.com","0612356789","admin","16559146482384667732");
