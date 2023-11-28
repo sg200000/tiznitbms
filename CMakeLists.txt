@@ -72,4 +72,4 @@ add_subdirectory(test)
 
 ## Install the target
 install(TARGETS main DESTINATION ".")
-install(FILES sql/generate_db.sql DESTINATION "sql")
+install(FILES sql/bank.sql DESTINATION "sql")
