@@ -57,4 +57,4 @@ target_include_directories(main PUBLIC interface/inc bms/inc init/inc)
 
 ## Install the target
 install(TARGETS main DESTINATION ".")
-install(FILES sql/generate_db.sql DESTINATION "sql")
+install(FILES sql/bank.sql DESTINATION "sql")
