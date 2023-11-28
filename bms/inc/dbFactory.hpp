@@ -28,7 +28,7 @@ public:
      */
     static std::unique_ptr<DBManager> createDb(dbType db, std::string dbName){
         if (db == SQLITE3){
-            return std::unique_ptr<DBManager>(new Sqlite3DB("bank.db"));
+            return std::unique_ptr<DBManager>(new Sqlite3DB(dbName+".db"));
         }
         return std::unique_ptr<DBManager>(nullptr);
     }

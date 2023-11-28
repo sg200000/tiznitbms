@@ -40,10 +40,9 @@ set(UTILS_SOURCES
 set(INIT_SOURCES
     init/src/initializer.cpp
 )
-
-# Build the main executable
-add_executable(main 
-    main.cpp
+add_library(
+    logic
+    STATIC
     ${INTERFACE_SOURCES}
     ${INIT_SOURCES}
     ${SYSTEM_SOURCES}
@@ -51,9 +50,25 @@ add_executable(main
     ${UTILS_SOURCES}
 )
 
+target_include_directories(
+    logic 
+    PUBLIC
+    interface/inc 
+    bms/inc 
+    init/inc
+)
+
+target_link_libraries(logic nlohmann_json::nlohmann_json sqlite3)
+
+# Build the main executable
+add_executable(main 
+    main.cpp
+)
+
 ## Link the main executable json and sqlite3 libraries
-target_link_libraries(main nlohmann_json::nlohmann_json sqlite3)
-target_include_directories(main PUBLIC interface/inc bms/inc init/inc)
+target_link_libraries(main logic)
+
+add_subdirectory(test)
 
 ## Install the target
 install(TARGETS main DESTINATION ".")

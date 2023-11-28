@@ -8,6 +8,13 @@
 #include <sstream>
 
 bool DBManager::deleteData(const std::string& tableName, std::unordered_map<std::string,std::string> conditions){
+    // Guard if record does not exist
+    std::vector<std::vector<std::string>> outData;
+    if (!this->requestData(tableName,{},conditions,&outData)){
+        std::cerr << "no record to be deleted" << std::endl;
+        return false;
+    }
+    
     std::string sql;
     std::stringstream sqlBuilder;
 
@@ -16,8 +23,9 @@ bool DBManager::deleteData(const std::string& tableName, std::unordered_map<std:
     
     // Build SQL query with serialized data
     sqlBuilder << "DELETE FROM " << tableName;
-    sqlBuilder << " WHERE " << prepareAndSerialize(conditions,tableHeader," AND ");
-
+    if (conditions.size() != 0){
+        sqlBuilder << " WHERE " << prepareAndSerialize(conditions,tableHeader," AND ");
+    }
     // stringify and execute the SQL query
     sql = sqlBuilder.str();
     return this->execute(sql);
@@ -35,8 +43,9 @@ bool DBManager::updateData(const std::string& tableName,
     // Build SQL query with serialized data
     sqlBuilder << "UPDATE " << tableName;
     sqlBuilder << " SET " << prepareAndSerialize(updates,tableHeader);
-    sqlBuilder << " WHERE " << prepareAndSerialize(conditions, tableHeader);
-
+    if (conditions.size() != 0){
+        sqlBuilder << " WHERE " << prepareAndSerialize(conditions, tableHeader);
+    }
     // stringify and execute the SQL query
     sql = sqlBuilder.str();
     return this->execute(sql);
@@ -77,9 +86,11 @@ bool DBManager::requestData(const std::string& tableName, std::vector<std::strin
     std::unordered_map<std::string, sqlType> tableHeader = requestTableHeader(tableName);
 
     // Build SQL query with serialized data
-    sqlBuilder << "SELECT " << utils::serialize(columns);
+    sqlBuilder << "SELECT " << (columns.size() != 0 ? utils::serialize(columns) : "*");
     sqlBuilder << " FROM " << tableName;
-    sqlBuilder << " WHERE " << prepareAndSerialize(conditions,tableHeader," AND ");
+    if (conditions.size() != 0){
+        sqlBuilder << " WHERE " << prepareAndSerialize(conditions,tableHeader," AND ");
+    }
     
     // stringify and execute the SQL query
     sql = sqlBuilder.str();

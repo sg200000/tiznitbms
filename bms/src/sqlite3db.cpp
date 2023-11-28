@@ -27,6 +27,10 @@ Sqlite3DB::~Sqlite3DB()
 }
 
 bool Sqlite3DB::execute(std::string sql, void* outData){
+    #ifdef _DEBUG
+    std::cout << sql << std::endl;
+    #endif
+    
     // Guard the database is opened
     if (this->db == nullptr){
         std::cerr << "Error : Database is not opened" << std::endl;
