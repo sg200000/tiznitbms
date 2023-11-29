@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: Build and Upload binaries
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "main", "develop" ]
 
 jobs:
-  build:
+  build-linux:
 
     runs-on: ubuntu-latest
 
@@ -22,7 +22,7 @@ jobs:
     - name: archive-binary
       uses: actions/upload-artifact@v3
       with:
-          name: binary
+          name: tiznitbms-linux
           path: ./tiznitbms/
 
   build-windows:
@@ -40,5 +40,5 @@ jobs:
     - name: archive-binary
       uses: actions/upload-artifact@v3
       with:
-          name: binary
+          name: tiznitbms-windows
           path: ./tiznitbms/
