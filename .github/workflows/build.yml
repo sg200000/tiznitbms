@@ -24,3 +24,21 @@ jobs:
       with:
           name: binary
           path: ./tiznitbms/
+
+  build-windows:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: configure
+      run: cmake -DCMAKE_INSTALL_PREFIX=./tiznitbms/ -S . -B build
+    - name: build
+      run: cmake --build build --config Release
+    - name: install
+      run: cmake --install build
+    - name: archive-binary
+      uses: actions/upload-artifact@v3
+      with:
+          name: binary
+          path: ./tiznitbms/
